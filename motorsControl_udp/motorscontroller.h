@@ -6,7 +6,7 @@
 #include <vector>
 #include "mediator.h"
 #include "innfosproxy.h"
-#include <QHostAddress>
+
 using namespace  std;
 
 class MOTORSCONTROLLSHARED_EXPORT MotorsController

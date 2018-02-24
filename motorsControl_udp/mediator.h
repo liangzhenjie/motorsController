@@ -6,7 +6,6 @@
 #include <functional>
 #include <string>
 #include "CSignal.hpp"
-#include <QHostAddress>
 #define TEST_DEBUG
 #define LOG_DEBUG
 //#define NO_HEART_BEAT

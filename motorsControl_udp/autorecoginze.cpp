@@ -63,7 +63,12 @@ void AutoRecoginze::startRecognize(QString addr,quint32 nPort,bool bRetry)
 
     InnfosProxy::SendProxy(0,D_CAN_CONNECT);
     InnfosProxy::SendProxy(0,D_READ_ADDRESS);
-    QTimer::singleShot(800,this,SLOT(waitTimeout()));
+    QTimer * pTimer = new QTimer(m_pAutoRecognize);
+    pTimer->setSingleShot(true);
+    connect(pTimer,&QTimer::timeout,this,&AutoRecoginze::waitTimeout);
+    pTimer->start(800);
+
+    //QTimer::singleShot(800,this,SLOT(waitTimeout()));
 }
 
 void AutoRecoginze::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
