@@ -25,7 +25,7 @@ MotorsController::~MotorsController()
     Mediator::destroyAllStaticObjects();
 }
 
-void MotorsController::autoRecoginze(QString addr, quint32 nPort)
+void MotorsController::autoRecoginze(string addr, uint32_t nPort)
 {
     mediator->autoRecognize(addr,nPort);
 }

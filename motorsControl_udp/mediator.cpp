@@ -32,12 +32,12 @@ void Mediator::destroyAllStaticObjects()
     m_pInstance = nullptr;
 }
 
-void Mediator::autoRecognize(QString addr, quint32 nPort)
+void Mediator::autoRecognize(std::string addr, quint32 nPort)
 {
 #ifdef TEST_DEBUG
     connect(Communication::getInstance(),&Communication::request,ProxyWatcher::getInstance(),&ProxyWatcher::addSendItem);
 #endif
-    AutoRecoginze::getInstance()->startRecognize(addr,nPort,true);
+    AutoRecoginze::getInstance()->startRecognize(QString(addr.c_str()),nPort,true);
 }
 
 void Mediator::onCanConnected(quint8 nCommunicationUnitId)

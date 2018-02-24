@@ -27,7 +27,7 @@ public:
  * @author liangzhenjie
  * @date 2018/01/09
 **/
-    void autoRecoginze(QString addr, quint32 nPort);
+    void autoRecoginze(string addr, uint32_t nPort);
     /**
  * @brief 是否有可用设备
  * @author liangzhenjie
