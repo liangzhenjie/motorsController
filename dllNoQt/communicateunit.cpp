@@ -107,8 +107,7 @@ quint8 CommunicateUnit::getConnectionStatus() const
 void CommunicateUnit::progress()
 {
     QUdpSocket socket;
-    //String localHost = QHostInfo::localHostName();
-    QString localHost = "192.168.1.100";
+    QString localHost = QHostInfo::localHostName();
     if(!socket.bind(QHostAddress(localHost),2001))
     {
         emit error(tr("bind host %1 port %2 failed!").arg(localHost).arg(2001));
@@ -140,7 +139,7 @@ void CommunicateUnit::progress()
             if(nLen == sendData.size())
             {
                 qDebug()<<"SendProxy"<<nLen<<sendData.toHex()<<QTime::currentTime().toString("hh:mm:ss.zzz")<<m_nUnitId << "new";
-                //emit response(m_nUnitId,sendData);
+                emit response(m_nUnitId,sendData);
                 sendData.clear();
             }
             quint8 proxyId = sendData[2];

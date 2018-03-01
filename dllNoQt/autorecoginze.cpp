@@ -6,14 +6,14 @@
 #include "userdefine.h"
 #include <QThread>
 #include <QDebug>
-//#ifdef linux
-//#include <signal.h>
-//#include <unistd.h>
-//#include <time.h>
-//#include <sys/time.h>
-//#include <stdlib.h>
-//#include <stdio.h>
-//#endif //linux
+#ifdef linux
+#include <signal.h>
+#include <unistd.h>
+#include <time.h>
+#include <sys/time.h>
+#include <stdlib.h>
+#include <stdio.h>
+#endif //linux
 
 AutoRecoginze * AutoRecoginze::m_pAutoRecognize = nullptr;
 AutoRecoginze::AutoRecoginze(QObject *parent) :
@@ -71,17 +71,17 @@ void AutoRecoginze::startRecognize(QString addr,quint32 nPort,bool bRetry)
 
     InnfosProxy::SendProxy(0,D_CAN_CONNECT);
     InnfosProxy::SendProxy(0,D_READ_ADDRESS);
-//#ifdef linux
-//    struct itimerval value,ovalue;
-//    signal(SIGALRM,AutoRecoginze::waitTimeout);
-//    value.it_interval.tv_sec = 0;
-//    value.it_interval.tv_usec = 0;
-//    value.it_value.tv_sec=0;
-//    value.it_value.tv_usec = 800000;
-//    setitimer(ITIMER_REAL,&value,&ovalue);
-//#endif //linux
+#ifdef linux
+    struct itimerval value,ovalue;
+    signal(SIGALRM,AutoRecoginze::waitTimeout);
+    value.it_interval.tv_sec = 0;
+    value.it_interval.tv_usec = 0;
+    value.it_value.tv_sec=0;
+    value.it_value.tv_usec = 800000;
+    setitimer(ITIMER_REAL,&value,&ovalue);
+#endif //linux
 
-    QTimer::singleShot(800,this,SLOT(waitTimeout()));
+    //QTimer::singleShot(800,this,SLOT(waitTimeout()));
 }
 
 void AutoRecoginze::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
@@ -94,10 +94,10 @@ void AutoRecoginze::openFailed()
     m_bTryNext = true;
 }
 
-void AutoRecoginze::waitTimeout()
+void AutoRecoginze::waitTimeout(int sig)
 {
     qDebug() << "wait timeout";
-    mediator->recognizeFinished(m_motorsInfo);
+    mediator->recognizeFinished(m_pAutoRecognize->getMotorsInfo());
     autoDestroy();
 }
 

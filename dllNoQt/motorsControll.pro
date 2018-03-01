@@ -9,7 +9,7 @@ QT += network
 QT += core
 TARGET = motorsControll
 TEMPLATE = lib
-#CONFIG -= app_bundle
+CONFIG -= app_bundle
 
 DEFINES += MOTORSCONTROLL_LIBRARY
 

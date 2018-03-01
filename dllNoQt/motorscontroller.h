@@ -6,12 +6,10 @@
 #include <vector>
 #include "mediator.h"
 #include "innfosproxy.h"
-#include <QCoreApplication>
-#include <QObject>
 
 using namespace  std;
 
-class MOTORSCONTROLLSHARED_EXPORT MotorsController : public QObject
+class MOTORSCONTROLLSHARED_EXPORT MotorsController
 {
 public:
     enum OperationFlags{
@@ -21,8 +19,6 @@ public:
         Save_Params_Finished,
         Attribute_Change_Finished,
     };
-    static MotorsController * getInstance(int &argc, char **argv);
-    static void progressEvents();
 public:
     ~MotorsController();
     MotorsController();
@@ -267,7 +263,6 @@ public:
     CSignal<uint8_t,double> m_sChartValueChange;
 private:
     vector<int> m_lConnectionIds;
-    static QCoreApplication * m_pQtCore;
 };
 
 #endif // MOTORSCONTROLLER_H

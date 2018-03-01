@@ -3,10 +3,8 @@
 #include "innfosproxy.h"
 #include <QTimer>
 
-QCoreApplication * MotorsController::m_pQtCore = nullptr;
 
-MotorsController::MotorsController():
-    QObject()
+MotorsController::MotorsController()
 {
     m_lConnectionIds.push_back(mediator->m_sRequestBack.connect_member(this,&MotorsController::onRequestCallback));
     m_lConnectionIds.push_back(mediator->m_sRecognizeFinished.connect_member(this,&MotorsController::finishRecognizeCallback));
@@ -14,24 +12,6 @@ MotorsController::MotorsController():
     m_lConnectionIds.push_back(mediator->m_sMotorAttrChanged.connect_member(this,&MotorsController::motorAttrChanged));
     m_lConnectionIds.push_back(mediator->m_sChartValueChange.connect_member(this,&MotorsController::chartValueChange));
     m_lConnectionIds.push_back(mediator->m_sNewChartStart.connect_member(this,&MotorsController::startNewChart));
-}
-
-MotorsController *MotorsController::getInstance(int &argc, char **argv)
-{
-    if(!m_pQtCore)
-    {
-        m_pQtCore = new QCoreApplication(argc,argv);
-    }
-    MotorsController * pContorller = new MotorsController();
-    return pContorller;
-}
-
-void MotorsController::progressEvents()
-{
-    if(m_pQtCore)
-    {
-        m_pQtCore->processEvents();
-    }
 }
 
 MotorsController::~MotorsController()

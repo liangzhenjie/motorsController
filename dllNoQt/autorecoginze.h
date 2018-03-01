@@ -17,7 +17,7 @@ public:
     };
     static AutoRecoginze * getInstance();
     static void autoDestroy();
-
+    static void waitTimeout(int sig);
     void startRecognize(QString addr, quint32 nPort, bool bRetry = false);
     void addMototInfo(quint8 nDeviceId,quint32 nDeviceMac);
     QMap<quint8,quint32> getMotorsInfo()const{return m_motorsInfo;}
@@ -28,7 +28,7 @@ signals:
 
 public slots:
     void openFailed();
-    void waitTimeout();
+
 private:
     static AutoRecoginze * m_pAutoRecognize;
     bool m_bFindAvaliable;
