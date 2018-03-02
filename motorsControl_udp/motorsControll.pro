@@ -54,5 +54,4 @@ unix {
     INSTALLS += target
 }
 
-DISTFILES += \
-    motorsControll.pro.user
+DISTFILES +=

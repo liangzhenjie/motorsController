@@ -57,6 +57,8 @@ enum Directives
     D_SET_PROFILE_VEL_DEC=0x27,
     D_READ_CURRENT_MAXSPEED=0x28,
     D_SET_CURRENT_MAXSPEED=0x29,
+    D_SET_SWITCH_MOTORS=0x2a,
+    D_READ_MOTORS_SWITCH=0x2b,
     D_SET_CURRENT_PID_MIN = 0x2e,//设置电流环的pid的上下限
     D_SET_CURRENT_PID_MAX=0x2f,
     D_SET_VELOCITY_PID_MIN=0x30,
@@ -146,8 +148,9 @@ enum Directives
     D_SWITCH_CALIBRATION_VEL=0xa5,
 
     D_READ_LAST_STATE=0xb0,//读取上一次状态（是否正常关机）
-    D_SET_SWITCH_MOTORS=0x2a,
-    D_READ_MOTORS_SWITCH=0x2b,
+
+    D_IP_BROADCAST=0xc0,//广播查找ip地址
+
     D_CLEAR_ERROR=0xfe,//清理错误
     D_CHECK_ERROR=0xff,//错误提示
     DIRECTIVES_INVALID,
@@ -183,6 +186,7 @@ public:
         SendProxy(nDeviceId,nIdx,nScaleValue);
     }
     static void SendQrealProxy(const quint8 nDeviceId,const int nIdx,qreal data);//data is qreal,will be scale
+    static QByteArray getProxyContent(const quint8 nDeviceId,const int nProxyIdx);
 protected:
 private:
     int m_nId;//协议id

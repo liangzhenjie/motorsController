@@ -6,6 +6,7 @@
 #include "userdefine.h"
 #include <QThread>
 #include <QDebug>
+#include <QHostInfo>
 //#ifdef linux
 //#include <signal.h>
 //#include <unistd.h>
@@ -15,89 +16,105 @@
 //#include <stdio.h>
 //#endif //linux
 
-AutoRecoginze * AutoRecoginze::m_pAutoRecognize = nullptr;
-AutoRecoginze::AutoRecoginze(QObject *parent) :
+AutoRecognize * AutoRecognize::m_pAutoRecognize = nullptr;
+AutoRecognize::AutoRecognize(QObject *parent) :
     QObject(parent),
     m_bFindAvaliable(false),
-    m_bTryNext(true)
+    m_bTryNext(true),
+    m_pSocket(nullptr)
 {
-    findAvailablePorts();
+    //findAvailablePorts();
     m_motorsInfo.clear();
+    m_pSocket = new QUdpSocket(this);
+    QHostAddress addr = QHostAddress(QHostInfo::localHostName());
+    if(m_pSocket->bind(addr,2001))
+    {
+        qDebug() << tr("bind %1 successfully").arg(addr.toString());
+    }
+    else {
+        qDebug() << tr("bind %1 failed").arg(addr.toString());
+    }
+    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
 }
 
-void AutoRecoginze::findAvailablePorts()
+void AutoRecognize::findCommunicationUnits()
 {
-//    m_portList.clear();
-//    QList<QSerialPortInfo> allportList = QSerialPortInfo::availablePorts();
-//    foreach (QSerialPortInfo info, allportList) {
-//        QString manufacturer = info.manufacturer();
-//        if(manufacturer == "FTDI")//filter some serialport that is not FTDI
-//            m_portList.append(info);
-//    }
+    m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_IP_BROADCAST),QHostAddress::Broadcast,2000);
+    QTimer::singleShot(300,[=]{
+        if(!m_bFindAvaliable)
+        {
+            mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
+        }
+    });
 }
 
-AutoRecoginze *AutoRecoginze::getInstance()
+AutoRecognize *AutoRecognize::getInstance()
 {
     if (!m_pAutoRecognize)
     {
-        m_pAutoRecognize = new AutoRecoginze;
-        //connect(Communication::getInstance(),&Communication::OpenPort,m_pAutoRecognize,&AutoRecoginze::onPortOpen);//todo
+        m_pAutoRecognize = new AutoRecognize;
+        //connect(Communication::getInstance(),&Communication::OpenPort,m_pAutoRecognize,&AutoRecognize::onPortOpen);//todo
     }
 
     return m_pAutoRecognize;
 }
 
-void AutoRecoginze::autoDestroy()
+void AutoRecognize::autoDestroy()
 {
     if(m_pAutoRecognize)
        delete m_pAutoRecognize;
     m_pAutoRecognize = nullptr;
 }
 
-void AutoRecoginze::startRecognize(QString addr,quint32 nPort,bool bRetry)
+void AutoRecognize::startRecognize(bool bRetry)
 {
     if(bRetry)
     {
         Communication::getInstance()->stop();
-        findAvailablePorts();
         m_motorsInfo.clear();
     }
-//    for(int i=0;i<m_portList.size();++i)
-//    {
-//        QSerialPortInfo info = m_portList.at(i);
-//        Communication::getInstance()->addCommunication(info.portName(),1500000);
-//    }
-    Communication::getInstance()->addCommunication(addr,nPort);
-
+    //findCommunicationUnits();
+    Communication::getInstance()->addCommunication("192.168.1.2",2000);
     InnfosProxy::SendProxy(0,D_CAN_CONNECT);
     InnfosProxy::SendProxy(0,D_READ_ADDRESS);
-//#ifdef linux
-//    struct itimerval value,ovalue;
-//    signal(SIGALRM,AutoRecoginze::waitTimeout);
-//    value.it_interval.tv_sec = 0;
-//    value.it_interval.tv_usec = 0;
-//    value.it_value.tv_sec=0;
-//    value.it_value.tv_usec = 800000;
-//    setitimer(ITIMER_REAL,&value,&ovalue);
-//#endif //linux
 
     QTimer::singleShot(800,this,SLOT(waitTimeout()));
 }
 
-void AutoRecoginze::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
+void AutoRecognize::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
 {
     m_motorsInfo.insert(nDeviceId,nDeviceMac);
 }
 
-void AutoRecoginze::openFailed()
+void AutoRecognize::openFailed()
 {
     m_bTryNext = true;
 }
 
-void AutoRecoginze::waitTimeout()
+void AutoRecognize::waitTimeout()
+
 {
     qDebug() << "wait timeout";
     mediator->recognizeFinished(m_motorsInfo);
     autoDestroy();
+}
+
+void AutoRecognize::onIpBroadcast()
+{
+    QHostAddress addr;
+    quint16 nPort;
+    QByteArray datagram;
+    while (m_pSocket->hasPendingDatagrams()) {
+        datagram.resize(m_pSocket->pendingDatagramSize());
+        m_pSocket->readDatagram(datagram.data(),datagram.size(),&addr,&nPort);
+        if(datagram.at(0)==0xed && datagram.at(2) == D_IP_BROADCAST)
+        {
+            Communication::getInstance()->addCommunication(addr.toString(),nPort);
+            InnfosProxy::SendProxy(0,D_CAN_CONNECT);
+            InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+            m_bFindAvaliable = true;
+        }
+    }
+
 }
 

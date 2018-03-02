@@ -21,17 +21,18 @@ public:
         Save_Params_Finished,
         Attribute_Change_Finished,
     };
-    static MotorsController * getInstance(int &argc, char **argv);
-    static void progressEvents();
+
 public:
     ~MotorsController();
     MotorsController();
+    static MotorsController * getInstance(int &argc, char **argv);
+    static void progressEvents();
 /**
  * @brief 识别所有可用设备
  * @author liangzhenjie
  * @date 2018/01/09
 **/
-    void autoRecoginze(string addr, uint32_t nPort);
+    void autoRecoginze();
     /**
  * @brief 是否有可用设备
  * @author liangzhenjie

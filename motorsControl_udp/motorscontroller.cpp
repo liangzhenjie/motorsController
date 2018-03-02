@@ -45,9 +45,9 @@ MotorsController::~MotorsController()
     Mediator::destroyAllStaticObjects();
 }
 
-void MotorsController::autoRecoginze(string addr, uint32_t nPort)
+void MotorsController::autoRecoginze()
 {
-    mediator->autoRecognize(addr,nPort);
+    mediator->autoRecognize();
 }
 
 bool MotorsController::hasAvailableMotor() const

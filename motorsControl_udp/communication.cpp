@@ -182,7 +182,7 @@ void Communication::removeUnAvailablePorts()
     }
 
     if(m_lUnits.size() == 0)
-        emit connectionError(0,UserDefine::ERR_CAN_DISCONNECTION,tr("No available CAN can bel connected!"));
+        emit connectionError(0,UserDefine::ERR_CAN_DISCONNECTION,tr("No available CAN can be connected!"));
 }
 
 void Communication::changeUnitRelateId(quint8 nOldId, quint8 nNewId)

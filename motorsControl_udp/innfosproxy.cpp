@@ -362,6 +362,14 @@ void InnfosProxy::SendQrealProxy(const quint8 nDeviceId, const int nIdx, qreal d
     }
 }
 
+QByteArray InnfosProxy::getProxyContent(const quint8 nDeviceId, const int nProxyIdx)
+{
+    NoDataProxy proxy(nProxyIdx,nDeviceId);
+    proxy.m_pData->WriteShort(0);
+    proxy.m_pData->AddProxyEnd();
+    return proxy.m_pData->GetBuffer();
+}
+
 //template<class T>
 //void SendProxy(const int nDeviceId, const int nIdx, T data)
 //{

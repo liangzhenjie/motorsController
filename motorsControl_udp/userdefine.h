@@ -31,6 +31,7 @@ namespace UserDefine {
         ERR_ID_UNUNIQUE=0x800,
         ERR_MOTOR_DISCONNECTION=0x801,
         ERR_CAN_DISCONNECTION=0x802,
+        ERR_IP_ADDRESS_NOT_FOUND=0x803,
         ERR_UNKOWN=0xffff
     };
 

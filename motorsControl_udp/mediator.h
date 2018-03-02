@@ -26,7 +26,7 @@ class Mediator : public QObject
 public:
     static Mediator * getInstance();
     static void destroyAllStaticObjects();
-    void autoRecognize(std::string addr, quint32 nPort);//auto recognize motor
+    void autoRecognize();//auto recognize motor
     void onCanConnected(quint8 nCommunicationUnitId);
     void SendRequest(const QByteArray & buf);
     void Handshake(quint32 nDeviceId,bool bSuccess);

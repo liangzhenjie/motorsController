@@ -21,7 +21,7 @@ Mediator *Mediator::getInstance()
 void Mediator::destroyAllStaticObjects()
 {
     //MotorMgr::autoDestroy();
-    AutoRecoginze::autoDestroy();
+    AutoRecognize::autoDestroy();
     Communication::autoDestroy();
     DataUtil::autoDestroy();
     ProxyParser::autoDestroy();
@@ -32,12 +32,12 @@ void Mediator::destroyAllStaticObjects()
     m_pInstance = nullptr;
 }
 
-void Mediator::autoRecognize(std::string addr, quint32 nPort)
+void Mediator::autoRecognize()
 {
 #ifdef TEST_DEBUG
     connect(Communication::getInstance(),&Communication::request,ProxyWatcher::getInstance(),&ProxyWatcher::addSendItem);
 #endif
-    AutoRecoginze::getInstance()->startRecognize(QString(addr.c_str()),nPort,true);
+    AutoRecognize::getInstance()->startRecognize(true);
 }
 
 void Mediator::onCanConnected(quint8 nCommunicationUnitId)
@@ -83,7 +83,7 @@ void Mediator::SetFailed(const int nParam)
 
 void Mediator::reciveMotorInfo(quint8 communicateUnitId, const quint32 nDeviceMac, const quint8 nDeviceId)
 {
-    AutoRecoginze::getInstance()->addMototInfo(nDeviceId,nDeviceMac);
+    AutoRecognize::getInstance()->addMototInfo(nDeviceId,nDeviceMac);
     Communication::getInstance()->addRelateIdToUnit(communicateUnitId,nDeviceId);
     Communication::getInstance()->setUnitConnectionStatus(communicateUnitId,UserDefine::CAN_CONNECTED|UserDefine::MOTOR_CONNECTED);
 }

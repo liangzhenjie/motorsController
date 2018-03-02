@@ -118,7 +118,6 @@ void CommunicateUnit::progress()
     else {
         qDebug() << "bind" << localHost;
     }
-
     QByteArray sendData;
     bool bHasResponse = false;
     while (!m_bStop)
