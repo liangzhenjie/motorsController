@@ -27,7 +27,7 @@ public:
     }
     /**
      * @brief s_Connect 
-     * @param slot 
+     * @param slot
      * @return
      */
     int s_Connect(std::function<void(Args...)>const & slot)const{
