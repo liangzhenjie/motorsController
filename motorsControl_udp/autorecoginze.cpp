@@ -25,16 +25,16 @@ AutoRecognize::AutoRecognize(QObject *parent) :
 {
     //findAvailablePorts();
     m_motorsInfo.clear();
-    m_pSocket = new QUdpSocket(this);
-    QHostAddress addr = QHostAddress(QHostInfo::localHostName());
-    if(m_pSocket->bind(addr,2001))
-    {
-        qDebug() << tr("bind %1 successfully").arg(addr.toString());
-    }
-    else {
-        qDebug() << tr("bind %1 failed").arg(addr.toString());
-    }
-    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
+//    m_pSocket = new QUdpSocket(this);
+//    QHostAddress addr = QHostAddress(QHostInfo::localHostName());
+//    if(m_pSocket->bind(addr,2001))
+//    {
+//        qDebug() << tr("bind %1 successfully").arg(addr.toString());
+//    }
+//    else {
+//        qDebug() << tr("bind %1 failed").arg(addr.toString());
+//    }
+//    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
 }
 
 void AutoRecognize::findCommunicationUnits()

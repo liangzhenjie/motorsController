@@ -11,6 +11,8 @@
 
 using namespace  std;
 
+#define contorllerInst MotorsController::getInstance()
+
 class MOTORSCONTROLLSHARED_EXPORT MotorsController : public QObject
 {
 public:
@@ -25,7 +27,20 @@ public:
 public:
     ~MotorsController();
     MotorsController();
-    static MotorsController * getInstance(int &argc, char **argv);
+    /**
+     * @brief initContorller 初始化控制器，使用控制器之前必须先初始化
+     * @param argc 参数个数
+     * @param argv 参数数组
+     */
+    static void initController(int &argc, char **argv);
+    /**
+     * @brief getInstance 获取控制器对象
+     * @return 控制器对象
+     */
+    static MotorsController * getInstance();
+    /**
+     * @brief progressEvents 处理控制器事件
+     */
     static void progressEvents();
 /**
  * @brief 识别所有可用设备
@@ -260,15 +275,35 @@ private:
     int m_nLaunchMotorsCnt;
 public:
     //signals
+    /**
+     * @brief m_sOperationFinished 操作完成信号 <uint8_t 设备id,uint8_t 操作类型，类型枚举OperationFlags>
+     */
     CSignal<uint8_t,uint8_t> m_sOperationFinished;
+    /**
+     * @brief m_sRequestBack 请求返回信号 <uint8_t 设备id ,uint8_t 请求协议id,double 返回值>
+     */
     CSignal<uint8_t,uint8_t,double> m_sRequestBack;
+    /**
+     * @brief m_sError 错误信号 <uint8_t 设备id,uint16_t 错误id,std::string 错误信息>
+     */
     CSignal<uint8_t,uint16_t,std::string> m_sError;
+    /**
+     * @brief m_sMotorAttrChanged 电机数据变化，自动刷新或者主动刷新返回以后，会触发该信号
+     * <uint8_t 设备id,uint8_t 变化属性id,double 属性值>
+     */
     CSignal<uint8_t,uint8_t,double> m_sMotorAttrChanged;
+    /**
+     * @brief m_sNewChartStart 图显信号
+     */
     CSignal<> m_sNewChartStart;
+    /**
+     * @brief m_sChartValueChange 图显数据
+     */
     CSignal<uint8_t,double> m_sChartValueChange;
 private:
     vector<int> m_lConnectionIds;
     static QCoreApplication * m_pQtCore;
+    static MotorsController * m_pInstance;
 };
 
 #endif // MOTORSCONTROLLER_H

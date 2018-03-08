@@ -4,6 +4,7 @@
 #include <QTimer>
 
 QCoreApplication * MotorsController::m_pQtCore = nullptr;
+MotorsController * MotorsController::m_pInstance = nullptr;
 
 MotorsController::MotorsController():
     QObject()
@@ -16,22 +17,25 @@ MotorsController::MotorsController():
     m_lConnectionIds.push_back(mediator->m_sNewChartStart.connect_member(this,&MotorsController::startNewChart));
 }
 
-MotorsController *MotorsController::getInstance(int &argc, char **argv)
+void MotorsController::initController(int &argc, char **argv)
 {
-    if(!m_pQtCore)
+    if(m_pInstance != nullptr)
     {
-        m_pQtCore = new QCoreApplication(argc,argv);
+        return;
     }
-    MotorsController * pContorller = new MotorsController();
-    return pContorller;
+    if(QCoreApplication::instance() == nullptr)
+        m_pQtCore = new QCoreApplication(argc,argv);
+    m_pInstance= new MotorsController();
+}
+
+MotorsController *MotorsController::getInstance()
+{
+    return m_pInstance;
 }
 
 void MotorsController::progressEvents()
 {
-    if(m_pQtCore)
-    {
-        m_pQtCore->processEvents();
-    }
+    QCoreApplication::processEvents();
 }
 
 MotorsController::~MotorsController()
@@ -42,6 +46,7 @@ MotorsController::~MotorsController()
     mediator->m_sMotorAttrChanged.s_Disconnect(m_lConnectionIds);
     mediator->m_sChartValueChange.s_Disconnect(m_lConnectionIds);
     mediator->m_sNewChartStart.s_Disconnect(m_lConnectionIds);
+    delete m_pQtCore;
     Mediator::destroyAllStaticObjects();
 }
 
@@ -58,7 +63,10 @@ bool MotorsController::hasAvailableMotor() const
 void MotorsController::finishRecognizeCallback()
 {
     qDebug()<<"finished";
-    QTimer::singleShot(100,[=]{m_sOperationFinished.s_Emit(0,Recognize_Finished);}); //delay to insure all requests have acknowledges
+    QTimer::singleShot(100,[=]{
+        qDebug() << "really finished";
+        m_sOperationFinished.s_Emit(0,Recognize_Finished);
+    }); //delay to insure all requests have acknowledges
 }
 
 void MotorsController::onRequestCallback(uint8_t nDeviceId, uint8_t nProxyId, double value)
@@ -71,7 +79,9 @@ void MotorsController::onRequestCallback(uint8_t nDeviceId, uint8_t nProxyId, do
     case D_SET_SWITCH_MOTORS:
         if((int)value == UserDefine::MOTOR_SWITCH_ON)
         {
-            m_sOperationFinished.s_Emit(nDeviceId,Launch_Finished);
+            QTimer::singleShot(3000,[=]{
+                m_sOperationFinished.s_Emit(nDeviceId,Launch_Finished);
+            });
         }
         else
         {
