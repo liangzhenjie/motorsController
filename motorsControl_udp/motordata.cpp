@@ -640,12 +640,6 @@ MotorDataMgr* MotorDataMgr::getInstance()
     return m_pMgr;
 }
 
-void MotorDataMgr::autoDestroy()
-{
-    if(m_pMgr)
-        delete m_pMgr;
-    m_pMgr = nullptr;
-}
 
 MotorDataMgr::MotorDataMgr()
 {

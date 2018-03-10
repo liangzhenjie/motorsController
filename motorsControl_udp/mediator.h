@@ -25,7 +25,6 @@ class Mediator : public QObject
     Q_OBJECT
 public:
     static Mediator * getInstance();
-    static void destroyAllStaticObjects();
     void autoRecognize();//auto recognize motor
     void onCanConnected(quint8 nCommunicationUnitId);
     void SendRequest(const QByteArray & buf);
@@ -49,6 +48,19 @@ protected:
     Mediator(QObject * parent=0);
 private:
     static Mediator *m_pInstance;
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pInstance!=nullptr)
+            {
+                delete m_pInstance;
+                m_pInstance = nullptr;
+            }
+        }
+        static GC gc;
+    };
 public:
     CSignal<> m_sRecognizeFinished;
     CSignal<uint8_t,uint8_t,double> m_sRequestBack;

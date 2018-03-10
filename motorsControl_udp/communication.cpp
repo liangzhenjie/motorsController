@@ -30,7 +30,8 @@ Communication *Communication::getInstance()
     return m_pCommucation;
 }
 
-void Communication::autoDestroy()
+
+void Communication::sendDataBeforeDestroyed()
 {
     if(m_pCommucation)
     {
@@ -41,14 +42,14 @@ void Communication::autoDestroy()
         {
             if(!m_pCommucation->hasDataWaitToSend())
             {
-                delete m_pCommucation;
+                //delete m_pCommucation;
                 break;
             }
-            QThread::msleep(10);
+            QThread::msleep(1);
         }
 
     }
-    m_pCommucation = nullptr;
+    //_pCommucation = nullptr;
 }
 
 Communication::~Communication()

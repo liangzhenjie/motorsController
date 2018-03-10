@@ -14,12 +14,6 @@ ProxyParser *ProxyParser::getInstance()
     return m_pParser;
 }
 
-void ProxyParser::autoDestroy()
-{
-    if(m_pParser)
-        delete m_pParser;
-    m_pParser = nullptr;
-}
 
 void ProxyParser::parse(quint8 communicateUnitId, const QByteArray &buf)
 {

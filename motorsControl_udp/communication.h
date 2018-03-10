@@ -12,7 +12,7 @@ class Communication : public QObject
     Q_OBJECT
 public:
     static Communication * getInstance();
-    static void autoDestroy();
+    void sendDataBeforeDestroyed();
     ~ Communication();
     void addCommunication(const QString &addr,const quint32 nPort);
     void sendData(quint8 nDeviceId,const QByteArray & data);
@@ -31,6 +31,20 @@ signals:
     void response(quint8 unitId,const QByteArray response);
     void request(const QByteArray &request);
     void connectionError(quint8 unitId,quint16 errorId,QString errorStr);
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pCommucation!=nullptr)
+            {
+                m_pCommucation->sendDataBeforeDestroyed();
+                delete m_pCommucation;
+                m_pCommucation = nullptr;
+            }
+        }
+        static GC gc;
+    };
 private:
     static Communication * m_pCommucation;
     QList<CommunicateUnit *> m_lUnits;

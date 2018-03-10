@@ -13,7 +13,6 @@ class ProxyParser : public QObject
     Q_OBJECT
 public:
     static ProxyParser * getInstance();
-    static void autoDestroy();
     void parse(quint8 communicateUnitId,const QByteArray & buf);
 protected:
     explicit ProxyParser(QObject *parent = 0);
@@ -22,6 +21,19 @@ protected:
     bool dataCheck(const QByteArray & data);
     void dispatchData(quint8 communicateUnitId,QByteArray & buf);
 signals:
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pParser!=nullptr)
+            {
+                delete m_pParser;
+                m_pParser = nullptr;
+            }
+        }
+        static GC gc;
+    };
 
 public slots:
 private:

@@ -59,13 +59,6 @@ AutoRecognize *AutoRecognize::getInstance()
     return m_pAutoRecognize;
 }
 
-void AutoRecognize::autoDestroy()
-{
-    if(m_pAutoRecognize)
-       delete m_pAutoRecognize;
-    m_pAutoRecognize = nullptr;
-}
-
 void AutoRecognize::startRecognize(bool bRetry)
 {
     if(bRetry)
@@ -96,7 +89,7 @@ void AutoRecognize::waitTimeout()
 {
     qDebug() << "wait timeout";
     mediator->recognizeFinished(m_motorsInfo);
-    autoDestroy();
+    //autoDestroy();
 }
 
 void AutoRecognize::onIpBroadcast()

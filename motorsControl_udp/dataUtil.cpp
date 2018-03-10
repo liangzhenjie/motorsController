@@ -40,13 +40,6 @@ MotorData::Motor_Data_Id DataUtil::convertToMotorDataId(Directives id)
     return MotorData::DATA_INVALID;
 }
 
-void DataUtil::autoDestroy()
-{
-    if(m_pInstance)
-        delete m_pInstance;
-    m_pInstance = nullptr;
-}
-
 DataUtil::DataUtil()
 {
     readDataMap.insert(D_READ_CUR_CURRENT,MotorData::CUR_ACTURAL);

@@ -16,7 +16,6 @@ public:
         MOTOR_CONNECTED=0x04,
     };
     static AutoRecognize * getInstance();
-    static void autoDestroy();
 
     void startRecognize(bool bRetry = false);
     void addMototInfo(quint8 nDeviceId,quint32 nDeviceMac);
@@ -31,6 +30,19 @@ public slots:
     void waitTimeout();
 private slots:
     void onIpBroadcast();
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pAutoRecognize!=nullptr)
+            {
+                delete m_pAutoRecognize;
+                m_pAutoRecognize = nullptr;
+            }
+        }
+        static GC gc;
+    };
 private:
     static AutoRecognize * m_pAutoRecognize;
     bool m_bFindAvaliable;

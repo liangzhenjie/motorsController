@@ -11,7 +11,20 @@ public:
     static Directives convertToReadProxyId(MotorData::Motor_Data_Id id);
     static Directives convertToSetProxyId(MotorData::Motor_Data_Id id);
     static MotorData::Motor_Data_Id convertToMotorDataId(Directives id);
-    static void autoDestroy();
+private:
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pInstance!=nullptr)
+            {
+                delete m_pInstance;
+                m_pInstance = nullptr;
+            }
+        }
+        static GC gc;
+    };
 private:
     DataUtil();
     QMap<Directives,MotorData::Motor_Data_Id> readDataMap;

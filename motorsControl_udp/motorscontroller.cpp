@@ -47,7 +47,7 @@ MotorsController::~MotorsController()
     mediator->m_sChartValueChange.s_Disconnect(m_lConnectionIds);
     mediator->m_sNewChartStart.s_Disconnect(m_lConnectionIds);
     delete m_pQtCore;
-    Mediator::destroyAllStaticObjects();
+    //Mediator::destroyAllStaticObjects();
 }
 
 void MotorsController::autoRecoginze()

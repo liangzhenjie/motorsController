@@ -18,19 +18,6 @@ Mediator *Mediator::getInstance()
     return m_pInstance;
 }
 
-void Mediator::destroyAllStaticObjects()
-{
-    //MotorMgr::autoDestroy();
-    AutoRecognize::autoDestroy();
-    Communication::autoDestroy();
-    DataUtil::autoDestroy();
-    ProxyParser::autoDestroy();
-    MotorDataMgr::autoDestroy();
-    qDebug() << "delete";
-    if(m_pInstance)
-        delete m_pInstance;
-    m_pInstance = nullptr;
-}
 
 void Mediator::autoRecognize()
 {

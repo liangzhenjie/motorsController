@@ -174,7 +174,6 @@ class MotorDataMgr : public QObject
     Q_OBJECT
 public:
     static MotorDataMgr * getInstance();
-    static void autoDestroy();
     virtual ~MotorDataMgr();
 
     qreal getMotorDataAttrValueAsDouble(const quint8 nDeviceId,const MotorData::Motor_Data_Id attrId)const;
@@ -214,6 +213,19 @@ signals:
     void dataChanged(const quint8 nDeviceId,const MotorData::Motor_Data_Id attrId,QVariant value);
     void errorOccured(const quint8 nDeviceId,const quint16 erroId,QString errorInfo);
     void setProxyCallback(const quint8 nProxyId,bool bSuccess);
+private:
+    class GC{
+    public:
+        ~GC()
+        {
+            if(m_pMgr!=nullptr)
+            {
+                delete m_pMgr;
+                m_pMgr = nullptr;
+            }
+        }
+        static GC gc;
+    };
 private:
     MotorData * getMotorDataById(const quint8 nId)const;
     MotorData * getMotorDataByNewId(const quint8 nId)const;//if device id changed by user, sometimes we need to find the motorData using NewId we set before.
