@@ -207,6 +207,7 @@ public:
     void requestSuccessfully(const quint8 nDeviceId,const quint8 nProxyId);
     void reconnect(quint8 nDeviceId);
     void clearError(quint8 nDeviceId);
+    void sendCmd(quint8 nDeviceId,quint16 cmdId);
 private:
     MotorDataMgr();
 signals:

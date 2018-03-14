@@ -103,21 +103,21 @@ public:
 **/
     void closeMotor(uint8_t id);
     /**
- * @brief 开启或关闭设备自动刷新功能（默认启动后开启此功能）
+ * @brief 开启或关闭设备自动刷新功能，自动请求设备电流、速度、位置、电压、温度、逆变器温度（默认关闭此功能）
  * @author liangzhenjie
  * @date 2018/01/09
- * @param idArray 设备id数组
+ * @param id 设备id
  * @param bOpen 是否开启
 **/
-    void switchAutoRefresh(vector<uint8_t> idArray,bool bOpen);
+    void switchAutoRefresh(uint8_t id,bool bOpen);
     /**
- * @brief 设置自动刷新时间间隔
+ * @brief 设置自动刷新时间间隔（默认时间间隔为1s）
  * @author liangzhenjie
  * @date 2018/01/09
- * @param idArray 设备id数组
+ * @param id 设备id
  * @param mSec 毫秒数
 **/
-    void setAutoRefreshInterval(vector<uint8_t> idArray,uint32_t mSec);
+    void setAutoRefreshInterval(uint8_t id, uint32_t mSec);
     /**
  * @brief 设置位置
  * @author liangzhenjie
@@ -210,6 +210,16 @@ public:
 **/
     void setHomingOperationMode(uint8_t id,uint8_t nMode);
     /**
+     * @brief setMinPosLimit 设置最小位置限制，值为当前电机位置
+     * @param id 设备id
+     */
+    void setMinPosLimit(uint8_t id);
+    /**
+     * @brief setMaxPosLimit 设置最大位置限制，值为当前电机位置，最大位置限制必须大于最小位置限制
+     * @param id 设备id
+     */
+    void setMaxPosLimit(uint8_t id);
+    /**
  * @brief 开启图表指定通道
  * @author liangzhenjie
  * @date 2018/01/09
@@ -262,6 +272,7 @@ public:
  * @param id 设备id
 **/
     void clearError(uint8_t id);
+
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint8_t nDeviceId, uint8_t nProxyId,double value);

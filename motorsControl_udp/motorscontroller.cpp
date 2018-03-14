@@ -154,20 +154,14 @@ void MotorsController::closeMotor(uint8_t id)
     motorDataMgrInstance->setMotorDataAttrByUser(id,MotorData::MOTOR_SWITCH,UserDefine::MOTOR_SWITCH_OFF);
 }
 
-void MotorsController::switchAutoRefresh(vector<uint8_t> idArray, bool bOpen)
+void MotorsController::switchAutoRefresh(uint8_t id, bool bOpen)
 {
-    for(int i=0;i<idArray.size();++i)
-    {
-        motorDataMgrInstance->switchAutoRequestActual(idArray[i],bOpen);
-    }
+    motorDataMgrInstance->switchAutoRequestActual(id,bOpen);
 }
 
-void MotorsController::setAutoRefreshInterval(vector<uint8_t> idArray, uint32_t mSec)
+void MotorsController::setAutoRefreshInterval(uint8_t id, uint32_t mSec)
 {
-    for(int i=0;i<idArray.size();++i)
-    {
-        motorDataMgrInstance->setAutoRequestInterval(idArray[i],mSec);
-    }
+    motorDataMgrInstance->setAutoRequestInterval(id,mSec);
 }
 
 void MotorsController::setPosition(uint8_t id, double pos)
@@ -229,6 +223,16 @@ void MotorsController::clearHomingInfo(uint8_t id)
 void MotorsController::setHomingOperationMode(uint8_t id, uint8_t nMode)
 {
     motorDataMgrInstance->setHomingOperationMode(id,nMode);
+}
+
+void MotorsController::setMinPosLimit(uint8_t id)
+{
+    motorDataMgrInstance->sendCmd(id,D_SET_HOMING_MIN);
+}
+
+void MotorsController::setMaxPosLimit(uint8_t id)
+{
+    motorDataMgrInstance->sendCmd(id,D_SET_HOMING_MAX);
 }
 
 void MotorsController::openChartChannel(uint8_t id, uint8_t nChannelId)

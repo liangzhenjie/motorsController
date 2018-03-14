@@ -27,6 +27,8 @@ MotorData::MotorData(const quint8 nDeviceId, const quint32 nDeviceMac, QObject *
         else
         {
             InnfosProxy::SendProxy(deviceId(),D_HANDSHAKE);
+            if(m_motorData[ERROR_ID] == 0)//if error occur, do not check error again
+                InnfosProxy::SendProxy(deviceId(),D_CHECK_ERROR);
             ++ m_nHeartFailCnt;
         }
     });
@@ -75,12 +77,12 @@ void MotorData::switchAutoRequestActual(bool bStart)
     if(bStart)
     {
         m_pValueTimer->start(m_nAutoRequestInterval);
-        m_pHeartTimer->start(1000);
+        //m_pHeartTimer->start(1000);
     }
     else
     {
         m_pValueTimer->stop();
-        m_pHeartTimer->stop();
+        //m_pHeartTimer->stop();
     }
 }
 
@@ -215,8 +217,6 @@ void MotorData::requestActualValue()
     InnfosProxy::SendProxy(deviceId(),D_READ_VOLTAGE);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_INVERTER);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_MOTOR);
-    if(m_motorData[ERROR_ID] == 0)//if error occur, do not check error again
-        InnfosProxy::SendProxy(deviceId(),D_CHECK_ERROR);
 }
 
 void MotorData::saveData()
@@ -504,7 +504,7 @@ void MotorData::requestAllValue()
 
 #ifndef NO_HEART_BEAT
     m_pHeartTimer->start(1000);
-    m_pValueTimer->start(m_nAutoRequestInterval);
+    //m_pValueTimer->start(m_nAutoRequestInterval);
 #endif
 }
 
@@ -1008,6 +1008,18 @@ void MotorDataMgr::clearError(quint8 nDeviceId)
     if(pData)
     {
         pData->setValueByUser(MotorData::ERROR_ID,UserDefine::ERR_NONE);
+    }
+}
+
+void MotorDataMgr::sendCmd(quint8 nDeviceId, quint16 cmdId)
+{
+    MotorData * pData = getMotorDataById(nDeviceId);
+    if(pData)
+    {
+        if(cmdId < DIRECTIVES_INVALID)
+        {
+            InnfosProxy::SendProxy(nDeviceId,cmdId);
+        }
     }
 }
 
