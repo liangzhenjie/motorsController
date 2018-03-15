@@ -150,12 +150,27 @@ enum Directives
     D_READ_LAST_STATE=0xb0,//读取上一次状态（是否正常关机）
 
     D_IP_BROADCAST=0xc0,//广播查找ip地址
+    D_TMP_COMMAND=0xc1,//与中间板通信的协议指令
 
     D_CLEAR_ERROR=0xfe,//清理错误
     D_CHECK_ERROR=0xff,//错误提示
     DIRECTIVES_INVALID,
 };
 
+struct QuaternionStruct{
+    QuaternionStruct(double w,double x, double y,double z)
+    {
+        this->w = w;
+        this->x = x;
+        this->y = y;
+        this->z = z;
+    }
+
+    double w;
+    double x;
+    double y;
+    double z;
+};
 
 //串口协议(有数据有校验)
 class InnfosProxy : public QObject
@@ -188,6 +203,12 @@ public:
     static void SendQrealProxy(const quint8 nDeviceId,const int nIdx,qreal data);//data is qreal,will be scale
     static QByteArray getProxyContent(const quint8 nDeviceId,const int nProxyIdx);
 protected:
+private:
+    enum TMP_DIRECTIVES{
+        T_D_READ_QUATERNION=0x01,//读取四元数
+    };
+
+    static void decodeTmpCmd(quint8 communicateUnitId,QByteArray &buf);//解析与中间板的协议指令，指令内容里还有指令符
 private:
     int m_nId;//协议id
 protected:

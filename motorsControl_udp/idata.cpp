@@ -51,6 +51,21 @@ quint8 IData::deviceId = 0;
      return nTmp2;
  }
 
+ quint32 IData::ReadUInt()
+ {
+     if (m_nIndex + 4 > m_buffer.size())
+     {
+         return 0xffffffff;
+     }
+     uint nTmp = 0;
+     for (int j = 0; j < 4; ++j)
+     {
+         nTmp += (((m_buffer.at(m_nIndex++) << (24 - j * 8))) & (0xff << (24 - j * 8)));
+     }
+     quint32 nTmp2 = nTmp;
+     return nTmp2;
+ }
+
  qint8 IData::ReadByte()
  {
      if (m_nIndex + 1 > m_buffer.size())

@@ -246,8 +246,6 @@ void InnfosProxy::decode(quint8 communicateUnitId,QByteArray &buf)
         {
             //MsgBox::Tip(nullptr,tr("Tip"),"Current maximum is error!"); //todo
         }
-
-
     }
         break;
     case D_READ_FILTER_C_STATUS:
@@ -302,6 +300,9 @@ void InnfosProxy::decode(quint8 communicateUnitId,QByteArray &buf)
         quint32 version = data.ReadUByte()*100+data.ReadUByte()*10+data.ReadUByte();
         Mediator::getInstance()->SetCurParam(nDeviceId,version,nMode);
     }
+        break;
+    case D_TMP_COMMAND:
+        decodeTmpCmd(communicateUnitId,buf);
         break;
     default:
         bRet = true;
@@ -368,6 +369,38 @@ QByteArray InnfosProxy::getProxyContent(const quint8 nDeviceId, const int nProxy
     proxy.m_pData->WriteShort(0);
     proxy.m_pData->AddProxyEnd();
     return proxy.m_pData->GetBuffer();
+}
+
+void InnfosProxy::decodeTmpCmd(quint8 communicateUnitId, QByteArray &buf)
+{
+    IData data(buf);
+    //quint8 nMode = buf.at(2);
+    //quint8 nDeviceId = buf.at(1);
+    data.Skip(3);
+    quint16 nDataLen = data.ReadUShort();
+    if(nDataLen < 18)//数据不够
+    {
+        return;
+    }
+    quint8 nTmpDirective = data.ReadUByte();
+    switch (nTmpDirective) {
+    case T_D_READ_QUATERNION:
+    {
+        quint8 nPackageCnt = (nDataLen-1)/17;
+        for(int i=0;i<nPackageCnt;++i)
+        {
+            quint8 nIMUId = data.ReadUByte();
+            double w = data.ReadInt()*1.0/(1<<30);
+            double x = data.ReadInt()*1.0/(1<<30);
+            double y = data.ReadInt()*1.0/(1<<30);
+            double z = data.ReadInt()*1.0/(1<<30);
+            mediator->receiveQuaternion(nIMUId,w,x,y,z);
+        }
+    }
+        break;
+    default:
+        break;
+    }
 }
 
 //template<class T>

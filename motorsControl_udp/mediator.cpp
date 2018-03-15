@@ -111,6 +111,11 @@ void Mediator::chartVauleChange(const int nChannelId, qreal values)
     m_sChartValueChange.s_Emit(nChannelId,values);
 }
 
+void Mediator::receiveQuaternion(quint8 imuId, double w, double x, double y, double z)
+{
+    m_sQuaternion.s_Emit(imuId,w,x,y,z);
+}
+
 void Mediator::checkServosStatus()
 {
     //MotorMgr::getInstance()->CheckServosSwitch(); //to do

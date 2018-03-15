@@ -88,6 +88,7 @@ public:
     qint8 ReadByte();
     quint8 ReadUByte();
     qint32 ReadInt();
+    quint32 ReadUInt();
     void WriteByte(quint8 c);
     void WriteShort(qint16 content);
     void WriteInt(qint32 content);

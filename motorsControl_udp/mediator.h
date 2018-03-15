@@ -39,6 +39,7 @@ public:
     void checkServosStatus();//check servos are on or off
     void recognizeFinished(QMap<quint8,quint32> motorsInfo);
     void chartVauleChange(const int nChannelId,qreal values);//only use by chart
+    void receiveQuaternion(quint8 imuId, double w,double x,double y,double z);
 public slots:
     void response(quint8 nUnitId,const QByteArray buf);
     void reconnectDevice(quint8 nDeviceId);
@@ -68,6 +69,7 @@ public:
     CSignal<uint8_t,uint8_t,double> m_sMotorAttrChanged;
     CSignal<> m_sNewChartStart;
     CSignal<uint8_t,double> m_sChartValueChange;
+    CSignal<uint8_t,double,double,double,double> m_sQuaternion;
 };
 
 #endif // MEDIATOR_H
