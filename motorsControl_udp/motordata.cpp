@@ -447,6 +447,11 @@ void MotorData::requestAllValue()
 //    {
 //        InnfosProxy::SendProxy(m_deviceId,i);
 //    }
+    for (int i=D_READ_CUR_CURRENT;i<=D_READ_CUR_POSITION;++i)
+    {
+        InnfosProxy::SendProxy(deviceId(),i);
+    }
+
 
     for (int i=D_READ_CUR_P;i<=D_READ_PROFILE_POS_DEC;++i)
     {

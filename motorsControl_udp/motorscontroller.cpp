@@ -79,7 +79,7 @@ void MotorsController::onRequestCallback(uint8_t nDeviceId, uint8_t nProxyId, do
     case D_SET_SWITCH_MOTORS:
         if((int)value == UserDefine::MOTOR_SWITCH_ON)
         {
-            QTimer::singleShot(3000,[=]{
+            QTimer::singleShot(3500,[=]{//等待3.5s,开机动作才完成
                 m_sOperationFinished.s_Emit(nDeviceId,Launch_Finished);
             });
         }

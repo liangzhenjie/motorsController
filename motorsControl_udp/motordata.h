@@ -27,75 +27,75 @@ public:
     };
 
     enum Motor_Data_Id{
-        CUR_IQ_SET,
-        CUR_PROPORTIONAL,
-        CUR_INTEGRAL,
-        CUR_ID_SET,
-        CUR_MINIMAL,
-        CUR_MAXIMUM,
-        CUR_NOMINAL,
-        CUR_OUTPUT,
-        CUR_MAXSPEED,
-        CUR_ACTURAL,
-        CUR_DEMAND,
-        VEL_SET,
-        VEL_PROPORTIONAL,
-        VEL_INTEGRAL,
-        VEL_MINIMAL,
-        VEL_MAXIMUM,
-        VEL_ACTURAL,
-        VEL_DEMAND,
-        POS_SET,
-        POS_PROPORTIONAL,
-        POS_INTEGRAL,
-        POS_DIFFERENTIAL,
-        POS_MINIMAL,
-        POS_MAXIMUM,
-        POS_STEP_ADD,
-        POS_MIN_POS,
-        POS_MAX_POS,
-        POS_HOMING,
-        POS_ACTURAL,
-        POS_DEMAND,
-        PROFILE_POS_MAX_SPEED,
-        PROFILE_POS_ACC,
-        PROFILE_POS_DEC,
-        PROFILE_VEL_MAX_SPEED,
-        PROFILE_VEL_ACC,
-        PROFILE_VEL_DEC,
-        CHART_FREQUENCY,
-        CHART_THRESHOLD,
-        CHART_SWITCH,
-        POS_OFFSET,
-        VOLTAGE,
-        HOMING_LIMIT,//if
-        HOMING_CUR_MAX,
-        HOMING_CUR_MIN,
-        CURRENT_SCALE,
-        VELOCITY_SCALE,
-        FILTER_C_STATUS,
-        FILTER_C_VALUE,
-        FILTER_V_STATUS,
-        FILTER_V_VALUE,
-        FILTER_P_STATUS,
-        FILTER_P_VALUE,
-        INERTIA,
-        LOCK_ENERGY,
-        TEMP_MOTOR,
-        TEMP_INVERTER,
-        TEMP_PROTECT,
-        TEMP_RECOVERY,
-        CALIBRATION_SWITCH,
-        CALIBRATION_ANGLE,
-        MOTOR_SWITCH,
-        MOTOR_VERSION,//
-        ONLINE_STATUS,
-        DEVICE_ID,
-        MAC_ID,
-        MODE_ID,
-        ERROR_ID,
+        CUR_IQ_SET,//电流IQ值
+        CUR_PROPORTIONAL,//电流比例
+        CUR_INTEGRAL,//电流积分
+        CUR_ID_SET,//电流微分
+        CUR_MINIMAL,//预留
+        CUR_MAXIMUM,//预留
+        CUR_NOMINAL,//预留
+        CUR_OUTPUT,//预留
+        CUR_MAXSPEED,//电流环最大速度
+        CUR_ACTURAL,//当前电流值
+        CUR_DEMAND,//预留
+        VEL_SET,//速度设置
+        VEL_PROPORTIONAL,//速度比例
+        VEL_INTEGRAL,//速度积分
+        VEL_MINIMAL,//速度环最小电流比例
+        VEL_MAXIMUM,//速度环最大电流比例
+        VEL_ACTURAL,//速度值
+        VEL_DEMAND,//预留
+        POS_SET,//位置设置
+        POS_PROPORTIONAL,//位置比例
+        POS_INTEGRAL,//位置积分
+        POS_DIFFERENTIAL,//位置微分
+        POS_MINIMAL,//位置环最小速度比例
+        POS_MAXIMUM,//位置环最大速度比例
+        POS_STEP_ADD,//预留
+        POS_MIN_POS,//最小位置限制
+        POS_MAX_POS,//最大位置限制
+        POS_HOMING,//归零位置
+        POS_ACTURAL,//当前位置
+        POS_DEMAND,//预留
+        PROFILE_POS_MAX_SPEED,//profile position模式最大速度
+        PROFILE_POS_ACC,//profile position模式加速度
+        PROFILE_POS_DEC,//profile position模式减速速度
+        PROFILE_VEL_MAX_SPEED,//profile velocity模式最大速度
+        PROFILE_VEL_ACC,//profile velocity模式加速度
+        PROFILE_VEL_DEC,//profile velocity模式减速速度
+        CHART_FREQUENCY,//图像频率
+        CHART_THRESHOLD,//图像阈值
+        CHART_SWITCH,//图像开关
+        POS_OFFSET,//位置偏移
+        VOLTAGE,//电压
+        HOMING_LIMIT,//开启或关闭位置限制
+        HOMING_CUR_MAX,//归零最大电流
+        HOMING_CUR_MIN,//归零最小小电流
+        CURRENT_SCALE,//物理最大电流值
+        VELOCITY_SCALE,//速度最大电流值
+        FILTER_C_STATUS,//电流环滤波是否开启
+        FILTER_C_VALUE,//电流环滤波值
+        FILTER_V_STATUS,//速度环滤波是否开启
+        FILTER_V_VALUE,//速度环滤波值
+        FILTER_P_STATUS,//位置环滤波是否开启
+        FILTER_P_VALUE,//位置环滤波值
+        INERTIA,//惯量
+        LOCK_ENERGY,//堵转保护能力
+        TEMP_MOTOR,//执行器温度
+        TEMP_INVERTER,//逆变器温度
+        TEMP_PROTECT,//保护温度
+        TEMP_RECOVERY,//恢复温度
+        CALIBRATION_SWITCH,//预留
+        CALIBRATION_ANGLE,//预留
+        MOTOR_SWITCH,//执行器开关机
+        MOTOR_VERSION,//执行器固件版本
+        ONLINE_STATUS,//执行器是否在线
+        DEVICE_ID,//执行器Id
+        MAC_ID,//执行器SN号
+        MODE_ID,//执行器当前模式
+        ERROR_ID,//错误代码
         DATA_CNT,
-        DATA_CHART,//special data,don't need to save
+        DATA_CHART,//预留
         DATA_INVALID,
     };
 
