@@ -107,9 +107,9 @@ quint8 CommunicateUnit::getConnectionStatus() const
 void CommunicateUnit::progress()
 {
     QUdpSocket socket;
-    //String localHost = QHostInfo::localHostName();
-    QString localHost = "192.168.1.100";
-    if(!socket.bind(QHostAddress(localHost),2001))
+    QString localHost = QHostInfo::localHostName();
+    //QString localHost = "192.168.1.100";
+    if(!socket.bind(QHostAddress(localHost),2001,QAbstractSocket::ShareAddress))
     {
         emit error(tr("bind host %1 port %2 failed!").arg(localHost).arg(2001));
         qDebug() << socket.error() << socket.errorString() << localHost << 2001;
@@ -162,7 +162,7 @@ void CommunicateUnit::progress()
                     sendData.append(data);
                     m_dataMap[it.key()].pop_front();
                     quint8 proxyId = data[2];
-                    if(proxyId != D_SET_POSITION && proxyId != D_READ_CUR_POSITION)//只有不返回的指令才能多条同时发
+                    if(proxyId != D_SET_POSITION && proxyId != D_READ_CUR_CURRENT && proxyId != D_READ_CUR_VELOCITY && proxyId != D_READ_CUR_POSITION)//只有部分指令才能多条同时发
                         break;
                 }
             }

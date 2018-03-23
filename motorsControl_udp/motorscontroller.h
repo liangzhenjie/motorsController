@@ -243,6 +243,13 @@ public:
  * @param bOn 是否开启
 **/
     void switchChartAllChannel(uint8_t id,bool bOn);
+
+    /**
+     * @brief setCurrentChartMode 设置电流模式图显模式，有IQ和ID两种模式
+     * @param id 设备id
+     * @param mode 图显模式
+     */
+    void setCurrentChartMode(uint8_t id, uint8_t mode);
     /**
  * @brief 重新获取属性,将请求刷新属性
  * @author liangzhenjie

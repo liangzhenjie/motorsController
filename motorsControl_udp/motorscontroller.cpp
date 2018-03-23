@@ -250,6 +250,11 @@ void MotorsController::switchChartAllChannel(uint8_t id, bool bOn)
     motorDataMgrInstance->switchChartAllChannel(id,bOn);
 }
 
+void MotorsController::setCurrentChartMode(uint8_t id, uint8_t mode)
+{
+    motorDataMgrInstance->sendCmd(id,D_SET_CUR_TRIGGER_MODE,mode);
+}
+
 
 void MotorsController::regainAttrbute(uint8_t id, uint8_t attrId)
 {

@@ -1028,6 +1028,18 @@ void MotorDataMgr::sendCmd(quint8 nDeviceId, quint16 cmdId)
     }
 }
 
+void MotorDataMgr::sendCmd(quint8 nDeviceId, quint16 cmdId, quint8 value)
+{
+    MotorData * pData = getMotorDataById(nDeviceId);
+    if(pData)
+    {
+        if(cmdId < DIRECTIVES_INVALID)
+        {
+            InnfosProxy::SendProxy(nDeviceId,cmdId,value);
+        }
+    }
+}
+
 MotorData *MotorDataMgr::getMotorDataById(const quint8 nId) const
 {
     for(int i=0;i<m_allMotorDatas.size();++i)

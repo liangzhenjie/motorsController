@@ -208,6 +208,7 @@ public:
     void reconnect(quint8 nDeviceId);
     void clearError(quint8 nDeviceId);
     void sendCmd(quint8 nDeviceId,quint16 cmdId);
+    void sendCmd(quint8 nDeviceId,quint16 cmdId,quint8 value);
 private:
     MotorDataMgr();
 signals:

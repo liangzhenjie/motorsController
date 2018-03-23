@@ -25,25 +25,39 @@ AutoRecognize::AutoRecognize(QObject *parent) :
 {
     //findAvailablePorts();
     m_motorsInfo.clear();
-//    m_pSocket = new QUdpSocket(this);
-//    QHostAddress addr = QHostAddress(QHostInfo::localHostName());
-//    if(m_pSocket->bind(addr,2001))
-//    {
-//        qDebug() << tr("bind %1 successfully").arg(addr.toString());
-//    }
-//    else {
-//        qDebug() << tr("bind %1 failed").arg(addr.toString());
-//    }
-//    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
+    m_pSocket = new QUdpSocket(this);
+    QString localHost = QHostInfo::localHostName();
+    //QString localHost = "192.168.1.100";
+    QHostAddress addr = QHostAddress(localHost);
+    if(m_pSocket->bind(addr,2001,QAbstractSocket::ShareAddress))
+    {
+        qDebug() << tr("bind %1 successfully").arg(addr.toString());
+    }
+    else {
+        qDebug() << tr("bind %1 failed").arg(addr.toString());
+    }
+    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
 }
 
 void AutoRecognize::findCommunicationUnits()
 {
-    m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_IP_BROADCAST),QHostAddress::Broadcast,2000);
+    qint64 nLen = m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_CAN_CONNECT),QHostAddress::Broadcast,2000);
+    qDebug() << "write" << nLen << InnfosProxy::getProxyContent(0,D_CAN_CONNECT).toHex();
     QTimer::singleShot(300,[=]{
         if(!m_bFindAvaliable)
         {
-            mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
+            //mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
+        }
+        else
+        {
+            m_pSocket->close();
+            foreach (QHostAddress addr, m_addrVector)
+            {
+                Communication::getInstance()->addCommunication(addr.toString(),2000);
+                //InnfosProxy::SendProxy(0,D_CAN_CONNECT);
+                InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+            }
+            QTimer::singleShot(800,this,SLOT(waitTimeout()));
         }
     });
 }
@@ -65,13 +79,12 @@ void AutoRecognize::startRecognize(bool bRetry)
     {
         Communication::getInstance()->stop();
         m_motorsInfo.clear();
+        m_addrVector.clear();
     }
-    //findCommunicationUnits();
-    Communication::getInstance()->addCommunication("192.168.1.2",2000);
-    InnfosProxy::SendProxy(0,D_CAN_CONNECT);
-    InnfosProxy::SendProxy(0,D_READ_ADDRESS);
-
-    QTimer::singleShot(800,this,SLOT(waitTimeout()));
+    findCommunicationUnits();
+//    Communication::getInstance()->addCommunication("192.168.1.2",2000);
+//    InnfosProxy::SendProxy(0,D_CAN_CONNECT);
+//    InnfosProxy::SendProxy(0,D_READ_ADDRESS);
 }
 
 void AutoRecognize::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
@@ -89,6 +102,8 @@ void AutoRecognize::waitTimeout()
 {
     qDebug() << "wait timeout";
     mediator->recognizeFinished(m_motorsInfo);
+    if(m_pSocket)
+        m_pSocket->close();
     //autoDestroy();
 }
 
@@ -100,11 +115,10 @@ void AutoRecognize::onIpBroadcast()
     while (m_pSocket->hasPendingDatagrams()) {
         datagram.resize(m_pSocket->pendingDatagramSize());
         m_pSocket->readDatagram(datagram.data(),datagram.size(),&addr,&nPort);
-        if(datagram.at(0)==0xed && datagram.at(2) == D_IP_BROADCAST)
+        qDebug() << "receive" << datagram.toHex() << addr.toString() << nPort;
+        if((quint8)datagram.at(0)==0xee && (quint8)datagram.at(2) == D_CAN_CONNECT)
         {
-            Communication::getInstance()->addCommunication(addr.toString(),nPort);
-            InnfosProxy::SendProxy(0,D_CAN_CONNECT);
-            InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+            m_addrVector.push_back(addr);
             m_bFindAvaliable = true;
         }
     }

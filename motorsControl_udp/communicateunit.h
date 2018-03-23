@@ -31,6 +31,7 @@ public:
     bool isAvailable()const;
     void setConnectionStatus(quint8 nStatus);
     quint8 getConnectionStatus()const;
+    QString getCommunicationUnitName()const{return m_sUnitAddr;}
 public slots:
     void progress();
 private:
