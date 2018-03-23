@@ -15,6 +15,7 @@ MotorsController::MotorsController():
     m_lConnectionIds.push_back(mediator->m_sMotorAttrChanged.connect_member(this,&MotorsController::motorAttrChanged));
     m_lConnectionIds.push_back(mediator->m_sChartValueChange.connect_member(this,&MotorsController::chartValueChange));
     m_lConnectionIds.push_back(mediator->m_sNewChartStart.connect_member(this,&MotorsController::startNewChart));
+    m_lConnectionIds.push_back(mediator->m_sQuaternion.connect_member(this,&MotorsController::receiveQuaternion));
 }
 
 void MotorsController::initController(int &argc, char **argv)
@@ -46,6 +47,7 @@ MotorsController::~MotorsController()
     mediator->m_sMotorAttrChanged.s_Disconnect(m_lConnectionIds);
     mediator->m_sChartValueChange.s_Disconnect(m_lConnectionIds);
     mediator->m_sNewChartStart.s_Disconnect(m_lConnectionIds);
+    mediator->m_sQuaternion.s_Disconnect(m_lConnectionIds);
     delete m_pQtCore;
     //Mediator::destroyAllStaticObjects();
 }
@@ -274,6 +276,14 @@ void MotorsController::clearError(uint8_t id)
 {
     motorDataMgrInstance->clearError(id);
 }
+
+void MotorsController::readIMUData()
+{
+    quint8 nProxyId = D_TMP_COMMAND;
+    quint8 nValue = 1;
+    InnfosProxy::SendProxy(0,nProxyId,nValue);
+}
+
 vector<uint8_t> MotorsController::convertQListToVector(const QList<quint8> &qList) const
 {
     vector<uint8_t> idVector;
@@ -292,4 +302,9 @@ QList<quint8> MotorsController::convertVectorToQList(const vector<uint8_t> &cVec
         qList.push_back(cVector[i]);
     }
     return qList;
+}
+
+void MotorsController::receiveQuaternion(uint8_t id, double w, double x, double y, double z)
+{
+    m_sQuaternion.s_Emit(id,w,x,y,z);
 }

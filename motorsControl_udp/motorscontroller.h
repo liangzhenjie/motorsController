@@ -273,6 +273,8 @@ public:
 **/
     void clearError(uint8_t id);
 
+    void readIMUData();
+
 private:
     void finishRecognizeCallback();
     void onRequestCallback(uint8_t nDeviceId, uint8_t nProxyId,double value);
@@ -282,6 +284,7 @@ private:
     void chartValueChange(uint8_t channelId,double value);
     vector<uint8_t> convertQListToVector(const QList<quint8> &qList)const;
     QList<quint8> convertVectorToQList(const vector<uint8_t> &cVector)const;
+    void receiveQuaternion(uint8_t id, double w, double x, double y,double z);
 private:
 
     class GC{
@@ -325,6 +328,7 @@ public:
      * @brief m_sChartValueChange 图显数据
      */
     CSignal<uint8_t,double> m_sChartValueChange;
+    CSignal<uint8_t,double,double,double,double> m_sQuaternion;
 private:
     vector<int> m_lConnectionIds;
     static QCoreApplication * m_pQtCore;
