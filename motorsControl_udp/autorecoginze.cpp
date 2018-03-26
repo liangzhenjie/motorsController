@@ -44,7 +44,8 @@ void AutoRecognize::findCommunicationUnits()
 {
     qint64 nLen = m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_CAN_CONNECT),QHostAddress::Broadcast,2000);
     qDebug() << "write" << nLen << InnfosProxy::getProxyContent(0,D_CAN_CONNECT).toHex();
-    QTimer::singleShot(300,[=]{
+    QTimer::singleShot(300,[=]
+    {
         if(!m_bFindAvaliable)
         {
             //mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
@@ -62,6 +63,7 @@ void AutoRecognize::findCommunicationUnits()
             }
             QTimer::singleShot(800,this,SLOT(waitTimeout()));
         }
+    });
 }
 
 AutoRecognize *AutoRecognize::getInstance()
