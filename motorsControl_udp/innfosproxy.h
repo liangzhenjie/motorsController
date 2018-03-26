@@ -147,6 +147,10 @@ enum Directives
     D_READ_CALIBRATION_ANGLE=0xa4,
     D_SWITCH_CALIBRATION_VEL=0xa5,
 
+    D_READ_RESERVE_0=0xd0,
+    D_READ_RESERVE_1=0xd1,
+    D_READ_RESERVE_2=0xd2,
+    D_READ_RESERVE_3=0xd3,
     D_READ_LAST_STATE=0xb0,//读取上一次状态（是否正常关机）
 
     D_IP_BROADCAST=0xc0,//广播查找ip地址
@@ -183,7 +187,7 @@ public slots:
 public:
     InnfosProxy(const int nId,const quint8 nDeviceId);
     virtual ~InnfosProxy();
-    static void decode(quint8 communicateUnitId,QByteArray &buf);
+    static void decode(quint32 communicateUnitId,QByteArray &buf);
     const int GetIdx()const { return m_nId; }
     static void SendProxy(const quint8 nDeviceId,const int nIdx);
     static void SendProxy(const quint8 nDeviceId,const quint32 nDeviceMac,const int nIdx,const quint8 newDeviceId);
@@ -208,7 +212,7 @@ private:
         T_D_READ_QUATERNION=0x01,//读取四元数
     };
 
-    static void decodeTmpCmd(quint8 communicateUnitId,QByteArray &buf);//解析与中间板的协议指令，指令内容里还有指令符
+    static void decodeTmpCmd(quint32 communicateUnitId,QByteArray &buf);//解析与中间板的协议指令，指令内容里还有指令符
 private:
     int m_nId;//协议id
 protected:
@@ -221,7 +225,7 @@ class NoDataProxy : public InnfosProxy
 public slots:
 public:
     NoDataProxy(const int nId, const quint8 nDeviceId);
-    static void decode(quint8 communicateUnitId,QByteArray &buf);
+    static void decode(quint32 communicateUnitId,QByteArray &buf);
 protected:
 private:
 };
@@ -233,7 +237,7 @@ class NoCrcProxy : public InnfosProxy
 public slots:
 public:
     NoCrcProxy(const int nId, const quint8 nDeviceId);
-    static void decode(quint8 communicateUnitId,QByteArray &buf);
+    static void decode(quint32 communicateUnitId,QByteArray &buf);
 protected:
 private:
 };

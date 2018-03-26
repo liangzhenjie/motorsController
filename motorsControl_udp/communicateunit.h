@@ -41,6 +41,7 @@ private:
     quint16 m_nPort;
     QList<quint8> m_relateIdList;//motors's ids whitch communicate via this unit
     QMap<quint8,QVector <QByteArray>> m_dataMap;
+    QVector<QByteArray> m_dataVector;
     QMutex m_qmMutex;
     bool m_bStop;
     quint8 m_nConnectionStatus;

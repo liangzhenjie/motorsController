@@ -26,7 +26,7 @@ class Mediator : public QObject
 public:
     static Mediator * getInstance();
     void autoRecognize();//auto recognize motor
-    void onCanConnected(quint8 nCommunicationUnitId);
+    void onCanConnected(quint32 nCommunicationUnitId);
     void SendRequest(const QByteArray & buf);
     void Handshake(quint32 nDeviceId,bool bSuccess);
     void SetCurParam(const int nDeviceID,const QVariant value, const int nProxyId);//set motor param values
@@ -34,14 +34,14 @@ public:
     void SetFailed(const int nParam);//设置下位机参数fail
     //void NullChartPointer();
 
-    void reciveMotorInfo(quint8 communicateUnitId,const quint32 nDeviceMac, const quint8 nDeviceId);
+    void reciveMotorInfo(quint32 communicateUnitId,const quint32 nDeviceMac, const quint8 nDeviceId);
     void receiveNoDataProxy(const int nDeviceID);
     void checkServosStatus();//check servos are on or off
     void recognizeFinished(QMap<quint8,quint32> motorsInfo);
     void chartVauleChange(const int nChannelId,qreal values);//only use by chart
     void receiveQuaternion(quint8 imuId, double w,double x,double y,double z);
 public slots:
-    void response(quint8 nUnitId,const QByteArray buf);
+    void response(quint32 nUnitId,const QByteArray buf);
     void reconnectDevice(quint8 nDeviceId);
     void errorOccur(quint8 nDeviceId,quint16 errorId, QString errorStr);
     void motorAttrChanged(quint8 nDeviceId,quint8 nAttrId,QVariant value);
