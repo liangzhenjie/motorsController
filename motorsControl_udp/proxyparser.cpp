@@ -15,7 +15,7 @@ ProxyParser *ProxyParser::getInstance()
 }
 
 
-void ProxyParser::parse(quint8 communicateUnitId, const QByteArray &buf)
+void ProxyParser::parse(quint32 communicateUnitId, const QByteArray &buf)
 {
     m_remainData.append(buf);
     qDebug() << "parse" << buf.toHex();
@@ -130,7 +130,7 @@ bool ProxyParser::dataCheck(const QByteArray &data)
     return true;
 }
 
-void ProxyParser::dispatchData(quint8 communicateUnitId,QByteArray &buf)
+void ProxyParser::dispatchData(quint32 communicateUnitId,QByteArray &buf)
 {
 #ifdef TEST_DEBUG
     ProxyWatcher::getInstance()->reciveItem(buf);

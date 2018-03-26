@@ -31,7 +31,8 @@ AutoRecognize::AutoRecognize(QObject *parent) :
     QHostAddress addr = QHostAddress(localHost);
     if(m_pSocket->bind(addr,2001,QAbstractSocket::ShareAddress))
     {
-        qDebug() << tr("bind22 %1 successfully").arg(localHost);
+
+        qDebug() << tr("bind %1 successfully").arg(addr.toString());
     }
     else {
         qDebug() << tr("bind %1 failed").arg(addr.toString());
@@ -51,15 +52,16 @@ void AutoRecognize::findCommunicationUnits()
         else
         {
             m_pSocket->close();
+            int i=1;
             foreach (QHostAddress addr, m_addrVector)
             {
-                Communication::getInstance()->addCommunication(addr.toString(),2000);
+                Communication::getInstance()->addCommunication(addr.toString(),2000+i);
                 //InnfosProxy::SendProxy(0,D_CAN_CONNECT);
                 InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+                ++i;
             }
+            QTimer::singleShot(800,this,SLOT(waitTimeout()));
         }
-        QTimer::singleShot(800,this,SLOT(waitTimeout()));
-    });
 }
 
 AutoRecognize *AutoRecognize::getInstance()

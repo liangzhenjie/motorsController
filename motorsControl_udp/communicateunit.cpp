@@ -7,7 +7,6 @@
 #include <QThread>
 #include <QHostInfo>
 
-#define VECTOR_BUF
 
 CommunicateUnit::CommunicateUnit(quint32 unitId, const QString unitAddr, quint32 port, QObject *parent) :
     QObject(parent),
@@ -22,8 +21,13 @@ CommunicateUnit::CommunicateUnit(quint32 unitId, const QString unitAddr, quint32
 
 void CommunicateUnit::addRelateId(quint8 id)
 {
+    qDebug() << "Add start" << id << m_nUnitId;
     if(!isContainsRelateId(id))
+    {
+        qDebug() << "Add" << id << m_nUnitId;
         m_relateIdList.append(id);
+    }
+
 }
 
 void CommunicateUnit::switchOldRelateIdToNewRelateId(quint8 oldId, quint8 newId)
@@ -55,7 +59,8 @@ bool CommunicateUnit::isContainsRelateId(const quint8 id) const
 void CommunicateUnit::sendData(const QByteArray &sendData)
 {
     QMutexLocker locker(&m_qmMutex);
-#ifdef VECTOR_BUF
+
+#ifdef USING_VECTOR
     m_dataVector.push_back(sendData);
 #else
     QList<quint8> keys = m_dataMap.uniqueKeys();
@@ -82,7 +87,7 @@ void CommunicateUnit::stopCommunication()
 bool CommunicateUnit::hasDataWaiting()
 {
     QMutexLocker locker(&m_qmMutex);
-#ifdef VECTOR_BUF
+#ifdef USING_VECTOR
     return m_dataVector.size() > 0;
 #else
     QMapIterator<quint8,QVector<QByteArray>> it(m_dataMap);
@@ -117,10 +122,10 @@ void CommunicateUnit::progress()
     QUdpSocket socket;
     QString localHost = QHostInfo::localHostName();
     //QString localHost = "192.168.1.100";
-    if(!socket.bind(QHostAddress(localHost),2001,QAbstractSocket::ShareAddress))
+    if(!socket.bind(QHostAddress(localHost),m_nPort,QAbstractSocket::ShareAddress))
     {
-        emit error(tr("bind host %1 port %2 failed!").arg(localHost).arg(2001));
-        qDebug() << socket.error() << socket.errorString() << localHost << 2001;
+        emit error(tr("bind host %1 port %2 failed!").arg(localHost).arg(m_nPort));
+        qDebug() << socket.error() << socket.errorString() << localHost << m_nPort;
         return;
     }
     else {
@@ -160,8 +165,9 @@ void CommunicateUnit::progress()
         m_qmMutex.lock();
         if(sendData.size()==0)
         {
-#ifdef VECTOR_BUF
-            while (m_dataVector.size()>0)
+
+#ifdef USING_VECTOR
+            while (m_dataVector.size() > 0)
             {
                 QByteArray data = m_dataVector.at(0);
                 sendData.append(data);
@@ -193,8 +199,9 @@ void CommunicateUnit::progress()
         {
             QThread::usleep(600);
         }
-        else {
-            QThread::usleep(100);
+        else
+        {
+            QThread::usleep(50);
         }
         bHasResponse = true;
     }

@@ -181,6 +181,10 @@ DataUtil::DataUtil()
     //这个比较特殊 两条协议对应一个属性，处理时候要判断是开还是关
     setDataMap.insert(D_CHART_OPEN,MotorData::CHART_SWITCH);
     setDataMap.insert(D_CHART_CLOSE,MotorData::CHART_SWITCH);
+    readDataMap.insert(D_READ_RESERVE_0,MotorData::RESERVE_0);
+    readDataMap.insert(D_READ_RESERVE_1,MotorData::RESERVE_1);
+    readDataMap.insert(D_READ_RESERVE_2,MotorData::RESERVE_2);
+    readDataMap.insert(D_READ_RESERVE_3,MotorData::RESERVE_3);
 }
 
 

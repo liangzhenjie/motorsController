@@ -27,7 +27,7 @@ void Mediator::autoRecognize()
     AutoRecognize::getInstance()->startRecognize(true);
 }
 
-void Mediator::onCanConnected(quint8 nCommunicationUnitId)
+void Mediator::onCanConnected(quint32 nCommunicationUnitId)
 {
     Communication::getInstance()->setUnitConnectionStatus(nCommunicationUnitId,UserDefine::CAN_CONNECTED);
 }
@@ -68,8 +68,9 @@ void Mediator::SetFailed(const int nParam)
     Q_UNUSED(nParam);
 }
 
-void Mediator::reciveMotorInfo(quint8 communicateUnitId, const quint32 nDeviceMac, const quint8 nDeviceId)
+void Mediator::reciveMotorInfo(quint32 communicateUnitId, const quint32 nDeviceMac, const quint8 nDeviceId)
 {
+    qDebug() << "MotorInfo" << communicateUnitId << nDeviceId;
     AutoRecognize::getInstance()->addMototInfo(nDeviceId,nDeviceMac);
     Communication::getInstance()->addRelateIdToUnit(communicateUnitId,nDeviceId);
     Communication::getInstance()->setUnitConnectionStatus(communicateUnitId,UserDefine::CAN_CONNECTED|UserDefine::MOTOR_CONNECTED);
@@ -121,7 +122,7 @@ void Mediator::checkServosStatus()
     //MotorMgr::getInstance()->CheckServosSwitch(); //to do
 }
 
-void Mediator::response(quint8 nUnitId, const QByteArray buf)
+void Mediator::response(quint32 nUnitId, const QByteArray buf)
 {
     ProxyParser::getInstance()->parse(nUnitId,buf);
 }

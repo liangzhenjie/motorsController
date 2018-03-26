@@ -65,7 +65,7 @@ void Communication::addCommunication(const QString &addr, const quint32 nPort)
     if(/*pos > -1*/true)
     {
         //quint8 nPortNum = rx.cap(0).toUInt();
-        CommunicateUnit * pUnit = new CommunicateUnit(0,addr,nPort);
+        CommunicateUnit * pUnit = new CommunicateUnit(nPort,addr,nPort);//id与端口一致，现在端口都不一样
         QThread * pThread = new QThread();
         pUnit->moveToThread(pThread);
         m_lUnits.append(pUnit);
@@ -149,7 +149,7 @@ void Communication::recordRemainCmds()
     //    }
 }
 
-void Communication::addRelateIdToUnit(quint8 nUnitId, quint8 nRelateId)
+void Communication::addRelateIdToUnit(quint32 nUnitId, quint8 nRelateId)
 {
     for(int i=0;i<m_lUnits.size();++i)
     {
@@ -199,7 +199,7 @@ void Communication::changeUnitRelateId(quint8 nOldId, quint8 nNewId)
     }
 }
 
-void Communication::setUnitConnectionStatus(quint8 nUnitId, quint8 nStatus)
+void Communication::setUnitConnectionStatus(quint32 nUnitId, quint8 nStatus)
 {
     for(int i=0;i<m_lUnits.size();++i)
     {

@@ -13,13 +13,13 @@ class ProxyParser : public QObject
     Q_OBJECT
 public:
     static ProxyParser * getInstance();
-    void parse(quint8 communicateUnitId,const QByteArray & buf);
+    void parse(quint32 communicateUnitId,const QByteArray & buf);
 protected:
     explicit ProxyParser(QObject *parent = 0);
     void handleError();//data error
     bool headCheck(const QByteArray & data);
     bool dataCheck(const QByteArray & data);
-    void dispatchData(quint8 communicateUnitId,QByteArray & buf);
+    void dispatchData(quint32 communicateUnitId,QByteArray & buf);
 signals:
 private:
     class GC{

@@ -36,7 +36,7 @@ void InnfosProxy::Send()
 
 }
 
-void InnfosProxy::decode(quint8 communicateUnitId,QByteArray &buf)
+void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
 {
     IData data(buf);
     if (buf.size() < 6/* || !data.CheckData()*/)
@@ -371,7 +371,7 @@ QByteArray InnfosProxy::getProxyContent(const quint8 nDeviceId, const int nProxy
     return proxy.m_pData->GetBuffer();
 }
 
-void InnfosProxy::decodeTmpCmd(quint8 communicateUnitId, QByteArray &buf)
+void InnfosProxy::decodeTmpCmd(quint32 communicateUnitId, QByteArray &buf)
 {
     IData data(buf);
     //quint8 nMode = buf.at(2);
@@ -421,7 +421,7 @@ NoDataProxy::NoDataProxy(const int nId, const quint8 nDeviceId):
 
 }
 
-void NoDataProxy::decode(quint8 communicateUnitId, QByteArray &buf)
+void NoDataProxy::decode(quint32 communicateUnitId, QByteArray &buf)
 {
     if (buf.size() < 6)
     {
@@ -445,7 +445,7 @@ NoCrcProxy::NoCrcProxy(const int nId, const quint8 nDeviceId) :
 
 }
 
-void NoCrcProxy::decode(quint8 communicateUnitId, QByteArray &buf)
+void NoCrcProxy::decode(quint32 communicateUnitId, QByteArray &buf)
 {
     IData data(buf);
     if (buf.size() < 6)
