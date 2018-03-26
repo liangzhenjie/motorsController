@@ -50,6 +50,7 @@ private:
     //QList <QSerialPortInfo> m_portList;
     QMap<quint8,quint32> m_motorsInfo;
     QUdpSocket * m_pSocket;
+    QVector<QHostAddress> m_addrVector;
 };
 
 #endif // AUTORECOGINZE_H

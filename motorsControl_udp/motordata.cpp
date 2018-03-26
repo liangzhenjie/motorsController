@@ -447,6 +447,11 @@ void MotorData::requestAllValue()
 //    {
 //        InnfosProxy::SendProxy(m_deviceId,i);
 //    }
+    for (int i=D_READ_CUR_CURRENT;i<=D_READ_CUR_POSITION;++i)
+    {
+        InnfosProxy::SendProxy(deviceId(),i);
+    }
+
 
     for (int i=D_READ_CUR_P;i<=D_READ_PROFILE_POS_DEC;++i)
     {
@@ -1019,6 +1024,18 @@ void MotorDataMgr::sendCmd(quint8 nDeviceId, quint16 cmdId)
         if(cmdId < DIRECTIVES_INVALID)
         {
             InnfosProxy::SendProxy(nDeviceId,cmdId);
+        }
+    }
+}
+
+void MotorDataMgr::sendCmd(quint8 nDeviceId, quint16 cmdId, quint8 value)
+{
+    MotorData * pData = getMotorDataById(nDeviceId);
+    if(pData)
+    {
+        if(cmdId < DIRECTIVES_INVALID)
+        {
+            InnfosProxy::SendProxy(nDeviceId,cmdId,value);
         }
     }
 }

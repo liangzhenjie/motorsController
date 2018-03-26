@@ -170,15 +170,16 @@ void Communication::removeUnAvailablePorts()
         {
             if(m_lUnits[i]->getConnectionStatus()&UserDefine::CAN_CONNECTED)
             {
-                //QString str = tr("Seriaport : %1 connection error, no servo can be connected!").arg(m_lUnits[i]->getPortName());
-                //emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_MOTOR_DISCONNECTION,str);
+                QString str = tr("Seriaport : %1 connection error, no servo can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
+                emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_MOTOR_DISCONNECTION,str);
             }
             else
             {
-//                QString str = tr("Seriaport : %1 connection error, no CAN can be connected!").arg(m_lUnits[i]->getPortName());
-//                emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_CAN_DISCONNECTION,str);
+                QString str = tr("Seriaport : %1 connection error, no CAN can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
+                emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_CAN_DISCONNECTION,str);
+                m_lUnits.removeAt(i);
             }
-            m_lUnits.removeAt(i);
+
         }
     }
 

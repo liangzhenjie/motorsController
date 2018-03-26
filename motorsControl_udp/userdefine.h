@@ -50,6 +50,12 @@ namespace UserDefine {
         CHART_SWITCH_OFF=0,
         CHART_SWITCH_ON=1,
     };
+
+    enum
+    {
+        IQ_CHART=0,
+        ID_CHART=1,
+    };
     enum HomingOperationMode{
         Homing_Auto=0,
         Homing_Manual,
