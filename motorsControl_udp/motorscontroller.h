@@ -11,7 +11,7 @@
 
 using namespace  std;
 
-#define contorllerInst MotorsController::getInstance()
+#define controllerInst MotorsController::getInstance()
 
 class MOTORSCONTROLLSHARED_EXPORT MotorsController : public QObject
 {
