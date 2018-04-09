@@ -26,13 +26,13 @@ AutoRecognize::AutoRecognize(QObject *parent) :
     //findAvailablePorts();
     m_motorsInfo.clear();
     m_pSocket = new QUdpSocket(this);
-    QString localHost = QHostInfo::localHostName();
+    //QString localHost = QHostInfo::localHostName();
     //QString localHost = "192.168.1.100";
-    QHostAddress addr = QHostAddress(localHost);
+    //QHostAddress addr = QHostAddress(localHost);
+    QHostAddress addr = QHostAddress::AnyIPv4;
     if(m_pSocket->bind(addr,2001,QAbstractSocket::ShareAddress))
     {
-
-        qDebug() << tr("bind %1 successfully").arg(addr.toString());
+        qDebug() << tr("bind %1 successfully").arg(m_pSocket->localAddress().toString());
     }
     else {
         qDebug() << tr("bind %1 failed").arg(addr.toString());
@@ -42,13 +42,14 @@ AutoRecognize::AutoRecognize(QObject *parent) :
 
 void AutoRecognize::findCommunicationUnits()
 {
-    qint64 nLen = m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_CAN_CONNECT),QHostAddress::Broadcast,2000);
+    qint64 nLen = m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_CAN_CONNECT),QHostAddress("192.168.1.255"),2000);
     qDebug() << "write" << nLen << InnfosProxy::getProxyContent(0,D_CAN_CONNECT).toHex();
     QTimer::singleShot(300,[=]
     {
         if(!m_bFindAvaliable)
         {
             //mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
+            waitTimeout();
         }
         else
         {

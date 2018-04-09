@@ -164,27 +164,26 @@ void Communication::addRelateIdToUnit(quint32 nUnitId, quint8 nRelateId)
 void Communication::removeUnAvailablePorts()
 {
     qDebug() << "remove";
+    if(m_lUnits.size() == 0)
+        emit connectionError(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
     for(int i=m_lUnits.size();--i>=0;)
     {
         if(!m_lUnits[i]->isAvailable())
         {
             if(m_lUnits[i]->getConnectionStatus()&UserDefine::CAN_CONNECTED)
             {
-                QString str = tr("Seriaport : %1 connection error, no servo can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
+                QString str = tr("ip : %1 connection error, no servo can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
                 emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_MOTOR_DISCONNECTION,str);
             }
             else
             {
-                QString str = tr("Seriaport : %1 connection error, no CAN can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
+                QString str = tr("ip : %1 connection error, no CAN can be connected!").arg(m_lUnits[i]->getCommunicationUnitName());
                 emit connectionError(m_lUnits[i]->getUnitId(),UserDefine::ERR_CAN_DISCONNECTION,str);
                 m_lUnits.removeAt(i);
             }
 
         }
     }
-
-    if(m_lUnits.size() == 0)
-        emit connectionError(0,UserDefine::ERR_CAN_DISCONNECTION,tr("No available CAN can be connected!"));
 }
 
 void Communication::changeUnitRelateId(quint8 nOldId, quint8 nNewId)

@@ -261,13 +261,20 @@ void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
     case D_READ_FILTER_C_VALUE:
     case D_READ_FILTER_V_VALUE:
     case D_READ_FILTER_P_VALUE:
-    case D_READ_TEMP_INVERTER:
-    case D_READ_TEMP_MOTOR:
     case D_READ_TEMP_PROTECT:
     case D_READ_TEMP_RECOVERY:
     {
         data.Skip(5);
         qreal value = data.ReadUShort();
+        value = value / (1 << 8);
+        Mediator::getInstance()->SetCurParam(nDeviceId,value , nMode);
+    }
+        break;
+    case D_READ_TEMP_MOTOR:
+    case D_READ_TEMP_INVERTER:
+    {
+        data.Skip(5);
+        qreal value = data.ReadShort();
         value = value / (1 << 8);
         Mediator::getInstance()->SetCurParam(nDeviceId,value , nMode);
     }
