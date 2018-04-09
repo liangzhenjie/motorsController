@@ -279,6 +279,12 @@ void MotorsController::clearError(uint8_t id)
 {
     motorDataMgrInstance->clearError(id);
 }
+
+string MotorsController::versionString() const
+{
+    return mediator->versionString().toStdString();
+}
+
 vector<uint8_t> MotorsController::convertQListToVector(const QList<quint8> &qList) const
 {
     vector<uint8_t> idVector;

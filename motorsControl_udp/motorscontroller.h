@@ -279,6 +279,11 @@ public:
  * @param id 设备id
 **/
     void clearError(uint8_t id);
+    /**
+     * @brief versionString 获取sdk版本号字符串
+     * @return sdk版本号字符串
+     */
+    string versionString()const;
 
 private:
     void finishRecognizeCallback();

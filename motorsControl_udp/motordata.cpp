@@ -397,7 +397,8 @@ void MotorData::setValueByProxy(const int nProxyId, QVariant value)
         errorInfo.insert(UserDefine::ERR_MOTOR_OVERHEATING,QString::fromLocal8Bit("ID:%1 Temperture:%2 Overheating error!").arg(deviceId()).arg(getValue(TEMP_MOTOR).toDouble()));
         errorInfo.insert(UserDefine::ERR_MOTOR_READ_OR_WIRTE,QString::fromLocal8Bit("ID:%1 Read or write params error!").arg(deviceId()));
         errorInfo.insert(UserDefine::ERR_MOTOR_MULTI_TURN,QString::fromLocal8Bit("ID:%1 Multi-turn count error!").arg(deviceId()));
-        errorInfo.insert(UserDefine::ERR_MOTOR_TEMPERATURE_SENSOR,QString::fromLocal8Bit("ID:%1 Temperature sensor error!").arg(deviceId()));
+        errorInfo.insert(UserDefine::ERR_INVERTOR_TEMPERATURE_SENSOR,QString::fromLocal8Bit("ID:%1 Invertor temperature sensor error!").arg(deviceId()));
+        errorInfo.insert(UserDefine::ERR_MOTOR_TEMPERATURE_SENSOR,QString::fromLocal8Bit("ID:%1 Motor temperature sensor error!").arg(deviceId()));
         errorInfo.insert(UserDefine::ERR_CAN_COMMUNICATION,QString::fromLocal8Bit("ID:%1 Can communication error!").arg(deviceId()));
         errorInfo.insert(UserDefine::ERR_DRV_PROTECTION,QString::fromLocal8Bit("ID:%1 DRV protection error!").arg(deviceId()));
         QList<int> keys = errorInfo.uniqueKeys();
@@ -500,7 +501,9 @@ void MotorData::requestAllValue()
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_MOTOR);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_INVERTER);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_PROTECT);
-    InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_RECOVERY);
+    InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_INVERTER);
+    InnfosProxy::SendProxy(deviceId(),D_READ_INVERTER_TEMP_PROTECT);
+    InnfosProxy::SendProxy(deviceId(),D_READ_INVERTER_TEMP_RECOVERY);
     InnfosProxy::SendProxy(deviceId(),D_READ_CALIBRATION_SWITCH);
     InnfosProxy::SendProxy(deviceId(),D_READ_CALIBRATION_ANGLE);
     InnfosProxy::SendProxy(deviceId(),D_READ_CURRENT_MAXSPEED);
@@ -563,6 +566,8 @@ void MotorData::setValueByUser(MotorData::Motor_Data_Id nDataId, QVariant value,
                 case D_SET_FILTER_P_VALUE:
                 case D_SET_TEMP_PROTECT:
                 case D_SET_TEMP_RECOVERY:
+                case D_SET_INVERTER_TEMP_PROTECT:
+                case D_SET_INVERTER_TEMP_RECOVERY:
                 {
                     qint16 nValue = value.toInt()*(1<<8);
                     InnfosProxy::SendProxy(deviceId(),pId,nValue);

@@ -15,6 +15,7 @@
 const qreal velScale = 6000;
 const qreal curScale = 8.25;
 
+class QVersionNumber;
 
 #define mediator  Mediator::getInstance()//get instance of Mediator
 #define requestCallback  std::function<void (uint8_t,uint8_t,double)>
@@ -25,6 +26,7 @@ class Mediator : public QObject
     Q_OBJECT
 public:
     static Mediator * getInstance();
+    ~Mediator();
     void autoRecognize();//auto recognize motor
     void onCanConnected(quint32 nCommunicationUnitId);
     void SendRequest(const QByteArray & buf);
@@ -40,6 +42,7 @@ public:
     void recognizeFinished(QMap<quint8,quint32> motorsInfo);
     void chartVauleChange(const int nChannelId,qreal values);//only use by chart
     void receiveQuaternion(quint8 imuId, double w,double x,double y,double z);
+    QString versionString()const;
 public slots:
     void response(quint32 nUnitId,const QByteArray buf);
     void reconnectDevice(quint8 nDeviceId);
@@ -70,6 +73,8 @@ public:
     CSignal<> m_sNewChartStart;
     CSignal<uint8_t,double> m_sChartValueChange;
     CSignal<uint8_t,double,double,double,double> m_sQuaternion;
+private:
+    QVersionNumber * m_pVersionMgr;
 };
 
 #endif // MEDIATOR_H

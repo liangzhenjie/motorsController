@@ -169,12 +169,6 @@ void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
     case D_READ_VELOCITY_PID_MAX:
     case D_READ_POSITION_PID_MIN:
     case D_READ_POSITION_PID_MAX:
-    case D_READ_PROFILE_POS_ACC:
-    case D_READ_PROFILE_POS_DEC:
-    case D_READ_PROFILE_POS_MAX_SPEED:
-    case D_READ_PROFILE_VEL_ACC:
-    case D_READ_PROFILE_VEL_DEC:
-    case D_READ_PROFILE_VEL_MAX_SPEED:
     case D_READ_POS_OFFSET:
     case D_READ_HOMING_CUR_MAX:
     case D_READ_HOMING_CUR_MIN:
@@ -183,6 +177,20 @@ void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
         data.Skip(5);
         qreal maximum = data.ReadInt();
         maximum = maximum / (1 << 24);
+        Mediator::getInstance()->SetCurParam(nDeviceId,maximum , nMode);
+
+    }
+        break;
+    case D_READ_PROFILE_POS_ACC:
+    case D_READ_PROFILE_POS_DEC:
+    case D_READ_PROFILE_POS_MAX_SPEED:
+    case D_READ_PROFILE_VEL_ACC:
+    case D_READ_PROFILE_VEL_DEC:
+    case D_READ_PROFILE_VEL_MAX_SPEED:
+    {
+        data.Skip(5);
+        qreal maximum = data.ReadInt();
+        maximum = maximum / (1 << 20)*60;
         Mediator::getInstance()->SetCurParam(nDeviceId,maximum , nMode);
 
     }
@@ -263,6 +271,8 @@ void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
     case D_READ_FILTER_P_VALUE:
     case D_READ_TEMP_PROTECT:
     case D_READ_TEMP_RECOVERY:
+    case D_READ_INVERTER_TEMP_PROTECT:
+    case D_READ_INVERTER_TEMP_RECOVERY:
     {
         data.Skip(5);
         qreal value = data.ReadUShort();
@@ -358,6 +368,17 @@ void InnfosProxy::SendQrealProxy(const quint8 nDeviceId, const int nIdx, qreal d
     case D_SET_CURRENT_MAXSPEED:
     {
         int nScaleValue = data/motorDataMgrInstance->getMotorDataAttrValueAsDouble(nDeviceId,MotorData::VELOCITY_SCALE)*(1<<24);
+        SendProxy(nDeviceId,nIdx,nScaleValue);
+    }
+        break;
+    case D_SET_PROFILE_POS_ACC:
+    case D_SET_PROFILE_POS_DEC:
+    case D_SET_PROFILE_POS_MAX_SPEED:
+    case D_SET_PROFILE_VEL_ACC:
+    case D_SET_PROFILE_VEL_DEC:
+    case D_SET_PROFILE_VEL_MAX_SPEED:
+    {
+        int nScaleValue = data*(1<<20)/60;
         SendProxy(nDeviceId,nIdx,nScaleValue);
     }
         break;

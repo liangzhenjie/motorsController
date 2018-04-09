@@ -6,6 +6,7 @@
 #include "innfosproxy.h"
 #include <QDebug>
 #include "motordata.h"
+#include <QVersionNumber>
 
 Mediator * Mediator::m_pInstance = nullptr;
 Mediator *Mediator::getInstance()
@@ -16,6 +17,11 @@ Mediator *Mediator::getInstance()
     }
 
     return m_pInstance;
+}
+
+Mediator::~Mediator()
+{
+    delete m_pVersionMgr;
 }
 
 
@@ -117,6 +123,11 @@ void Mediator::receiveQuaternion(quint8 imuId, double w, double x, double y, dou
     m_sQuaternion.s_Emit(imuId,w,x,y,z);
 }
 
+QString Mediator::versionString() const
+{
+    return m_pVersionMgr->toString();
+}
+
 void Mediator::checkServosStatus()
 {
     //MotorMgr::getInstance()->CheckServosSwitch(); //to do
@@ -143,11 +154,12 @@ void Mediator::motorAttrChanged(quint8 nDeviceId, quint8 nAttrId, QVariant value
 }
 
 Mediator::Mediator(QObject *parent):
-    QObject(parent)
+    QObject(parent),
+    m_pVersionMgr(nullptr)
 {
     connect(Communication::getInstance(),&Communication::response,this,&Mediator::response);
     connect(Communication::getInstance(),&Communication::connectionError,this,&Mediator::errorOccur);
-
+    m_pVersionMgr = new QVersionNumber(1,0,3);
 }
 
 

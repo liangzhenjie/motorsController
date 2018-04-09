@@ -83,8 +83,10 @@ public:
         LOCK_ENERGY,//堵转保护能力
         TEMP_MOTOR,//执行器温度
         TEMP_INVERTER,//逆变器温度
-        TEMP_PROTECT,//保护温度
-        TEMP_RECOVERY,//恢复温度
+        TEMP_PROTECT,//执行器保护温度
+        TEMP_RECOVERY,//执行器恢复温度
+        INVERTER_PROTECTED_TEMP,//逆变器保护温度
+        INVERTER_RECOVERY_TEMP,//逆变器恢复温度
         CALIBRATION_SWITCH,//预留
         CALIBRATION_ANGLE,//预留
         MOTOR_SWITCH,//执行器开关机
