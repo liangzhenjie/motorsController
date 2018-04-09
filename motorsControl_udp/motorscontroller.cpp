@@ -282,11 +282,18 @@ void MotorsController::clearError(uint8_t id)
     motorDataMgrInstance->clearError(id);
 }
 
+
 void MotorsController::readIMUData()
 {
     quint8 nProxyId = D_TMP_COMMAND;
     quint8 nValue = 1;
     InnfosProxy::SendProxy(0,nProxyId,nValue);
+}
+
+string MotorsController::versionString() const
+{
+    return mediator->versionString().toStdString();
+
 }
 
 vector<uint8_t> MotorsController::convertQListToVector(const QList<quint8> &qList) const
