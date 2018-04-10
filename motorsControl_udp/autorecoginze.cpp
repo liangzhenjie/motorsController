@@ -49,6 +49,7 @@ void AutoRecognize::findCommunicationUnits()
         {
             //mediator->errorOccur(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
             waitTimeout();
+            qDebug() << "failed";
         }
         else
         {
@@ -56,7 +57,8 @@ void AutoRecognize::findCommunicationUnits()
             int i=1;
             foreach (QHostAddress addr, m_addrVector)
             {
-                Communication::getInstance()->addCommunication(addr.toString(),2000+i);
+                int nId = Communication::getInstance()->addCommunication(addr.toString(),2000+i);
+                Communication::getInstance()->setUnitConnectionStatus(nId,UserDefine::CAN_CONNECTED);
                 //InnfosProxy::SendProxy(0,D_CAN_CONNECT);
                 InnfosProxy::SendProxy(0,D_READ_ADDRESS);
                 ++i;

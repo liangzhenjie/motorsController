@@ -58,7 +58,7 @@ Communication::~Communication()
 }
 
 
-void Communication::addCommunication(const QString &addr, const quint32 nPort)
+int Communication::addCommunication(const QString &addr, const quint32 nPort)
 {
 //    QRegExp rx("\\d+");
 //    int pos = rx.indexIn(addr);
@@ -77,11 +77,13 @@ void Communication::addCommunication(const QString &addr, const quint32 nPort)
         connect(pThread,&QThread::started,pUnit,&CommunicateUnit::progress);
 
         pThread->start();
+        return pUnit->getUnitId();
     }
     else
     {
         qDebug() << "portName error! " << addr;
     }
+    return -1;
 }
 
 void Communication::sendData(quint8 nDeviceId, const QByteArray &data)
@@ -163,7 +165,7 @@ void Communication::addRelateIdToUnit(quint32 nUnitId, quint8 nRelateId)
 
 void Communication::removeUnAvailablePorts()
 {
-    qDebug() << "remove";
+    qDebug() << "remove" << m_lUnits.size();
     if(m_lUnits.size() == 0)
         emit connectionError(0,UserDefine::ERR_IP_ADDRESS_NOT_FOUND,"No available ip address!");
     for(int i=m_lUnits.size();--i>=0;)

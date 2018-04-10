@@ -14,7 +14,7 @@ public:
     static Communication * getInstance();
     void sendDataBeforeDestroyed();
     ~ Communication();
-    void addCommunication(const QString &addr,const quint32 nPort);
+    int addCommunication(const QString &addr,const quint32 nPort);
     void sendData(quint8 nDeviceId,const QByteArray & data);
     bool hasDataWaitToSend();
     void stop();

@@ -165,6 +165,45 @@ void ProxyParser::dispatchData(quint32 communicateUnitId,QByteArray &buf)
     case D_READ_MOTORS_SWITCH://暂时处理
     case D_SET_SWITCH_MOTORS:
     case D_READ_LAST_STATE:
+    case D_SET_CURRENT_ID:
+    case D_SET_PROFILE_POS_MAX_SPEED:
+    case D_SET_PROFILE_POS_ACC:
+    case D_SET_PROFILE_POS_DEC:
+    case D_SET_PROFILE_VEL_MAX_SPEED:
+    case D_SET_PROFILE_VEL_ACC:
+    case D_SET_PROFILE_VEL_DEC:
+    case D_SET_CURRENT_MAXSPEED:
+    case D_SET_CURRENT_PID_MIN:
+    case D_SET_CURRENT_PID_MAX:
+    case D_SET_VELOCITY_PID_MIN:
+    case D_SET_VELOCITY_PID_MAX:
+    case D_SET_POSITION_PID_MIN:
+    case D_SET_POSITION_PID_MAX:
+    case D_SET_CHART_THRESHOLD:
+    case D_SET_CHART_FREQUENCY:
+    case D_SET_TEMP_PROTECT:
+    case D_SET_TEMP_RECOVERY:
+    case D_SET_INVERTER_TEMP_PROTECT:
+    case D_SET_INVERTER_TEMP_RECOVERY:
+    case D_SET_FILTER_C_STATUS:
+    case D_SET_FILTER_C_VALUE:
+    case D_SET_FILTER_V_STATUS:
+    case D_SET_FILTER_V_VALUE:
+    case D_SET_FILTER_P_STATUS:
+    case D_SET_FILTER_P_VALUE:
+    case D_SET_INERTIA:
+    case D_SET_LOCK_ENERGY:
+    case D_SET_MAX_POS:
+    case D_SET_MIN_POS:
+    case D_SET_HOMING_POS:
+    case D_SET_POS_OFFSET:
+    case D_SET_HOMING_LIMIT:
+    case D_SET_HOMING_OPERATION:
+    case D_SET_HOMING_MIN:
+    case D_SET_HOMING_MAX:
+    case D_SET_HOMING_CUR_MIN:
+    case D_SET_HOMING_CUR_MAX:
+    case D_SET_CALIBRATION_ANGLE:
         NoCrcProxy::decode(communicateUnitId,buf);
         break;
     default:
