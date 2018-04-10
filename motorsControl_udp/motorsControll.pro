@@ -7,7 +7,12 @@
 QT       -= gui
 QT += network
 QT += core
+CONFIG(debug,debug|release){
+TARGET = motorsControlld
+}else{
 TARGET = motorsControll
+}
+
 TEMPLATE = lib
 #CONFIG -= app_bundle
 

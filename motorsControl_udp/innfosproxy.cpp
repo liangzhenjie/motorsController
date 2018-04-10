@@ -321,6 +321,25 @@ void InnfosProxy::decode(quint32 communicateUnitId, QByteArray &buf)
     case D_TMP_COMMAND:
         decodeTmpCmd(communicateUnitId,buf);
         break;
+    case D_READ_RESERVE_0:
+    case D_READ_RESERVE_1:
+    case D_READ_RESERVE_2:
+    case D_READ_RESERVE_3:
+    {
+        data.Skip(3);
+        quint16 nLen = data.ReadUShort();
+        if(nLen==4)
+        {
+            qreal value = data.ReadInt()*1.0/(1<<24);
+            Mediator::getInstance()->SetCurParam(nDeviceId,value,nMode);
+        }
+        else if(nLen == 2)
+        {
+            qreal value = data.ReadShort();
+            Mediator::getInstance()->SetCurParam(nDeviceId,value,nMode);
+        }
+    }
+        break;
     default:
         bRet = true;
         break;

@@ -501,7 +501,7 @@ void MotorData::requestAllValue()
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_MOTOR);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_INVERTER);
     InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_PROTECT);
-    InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_INVERTER);
+    InnfosProxy::SendProxy(deviceId(),D_READ_TEMP_RECOVERY);
     InnfosProxy::SendProxy(deviceId(),D_READ_INVERTER_TEMP_PROTECT);
     InnfosProxy::SendProxy(deviceId(),D_READ_INVERTER_TEMP_RECOVERY);
     InnfosProxy::SendProxy(deviceId(),D_READ_CALIBRATION_SWITCH);
