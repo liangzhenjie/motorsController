@@ -1,5 +1,4 @@
-﻿#include "autorecoginze.h"
-#include "communication.h"
+﻿#include "EthernetAutoRecognize.h"
 #include "innfosproxy.h"
 #include <QTimer>
 #include "mediator.h"
@@ -16,11 +15,9 @@
 //#include <stdio.h>
 //#endif //linux
 
-AutoRecognize * AutoRecognize::m_pAutoRecognize = nullptr;
-AutoRecognize::AutoRecognize(QObject *parent) :
-    QObject(parent),
+EthernetAutoRecognize::EthernetAutoRecognize(QObject *parent) :
+    AbstractAutoRecongnize(parent),
     m_bFindAvaliable(false),
-    m_bTryNext(true),
     m_pSocket(nullptr)
 {
     //findAvailablePorts();
@@ -37,10 +34,10 @@ AutoRecognize::AutoRecognize(QObject *parent) :
     else {
         qDebug() << tr("bind %1 failed").arg(addr.toString());
     }
-    connect(m_pSocket,&QUdpSocket::readyRead,this,&AutoRecognize::onIpBroadcast);
+    connect(m_pSocket,&QUdpSocket::readyRead,this,&EthernetAutoRecognize::onIpBroadcast);
 }
 
-void AutoRecognize::findCommunicationUnits()
+void EthernetAutoRecognize::findCommunicationUnits()
 {
     qint64 nLen = m_pSocket->writeDatagram(InnfosProxy::getProxyContent(0,D_CAN_CONNECT),QHostAddress("192.168.1.255"),2000);
     qDebug() << "write" << nLen << InnfosProxy::getProxyContent(0,D_CAN_CONNECT).toHex();
@@ -57,53 +54,27 @@ void AutoRecognize::findCommunicationUnits()
             int i=1;
             foreach (QHostAddress addr, m_addrVector)
             {
-                int nId = Communication::getInstance()->addCommunication(addr.toString(),2000+i);
-                Communication::getInstance()->setUnitConnectionStatus(nId,UserDefine::CAN_CONNECTED);
-                //InnfosProxy::SendProxy(0,D_CAN_CONNECT);
-                InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+                int nId = mediator->addCommunicationUnit(addr.toString(),2000+i);
+                mediator->setUnitConnectionStatus(nId,UserDefine::CAN_CONNECTED);
+                //InnfosProxy::SendProxy(0,D_CAN_CONNECT);               
                 ++i;
             }
-            QTimer::singleShot(800,this,SLOT(waitTimeout()));
+            InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+            QTimer::singleShot(800,[=]{waitTimeout();});
         }
     });
 }
 
-AutoRecognize *AutoRecognize::getInstance()
+void EthernetAutoRecognize::startRecognize()
 {
-    if (!m_pAutoRecognize)
-    {
-        m_pAutoRecognize = new AutoRecognize;
-        //connect(Communication::getInstance(),&Communication::OpenPort,m_pAutoRecognize,&AutoRecognize::onPortOpen);//todo
-    }
-
-    return m_pAutoRecognize;
-}
-
-void AutoRecognize::startRecognize(bool bRetry)
-{
-    if(bRetry)
-    {
-        Communication::getInstance()->stop();
-        m_motorsInfo.clear();
-        m_addrVector.clear();
-    }
+    //Communication::getInstance()->stop();
+    m_motorsInfo.clear();
+    m_addrVector.clear();
     findCommunicationUnits();
-//    Communication::getInstance()->addCommunication("192.168.1.2",2000);
-//    InnfosProxy::SendProxy(0,D_CAN_CONNECT);
-//    InnfosProxy::SendProxy(0,D_READ_ADDRESS);
+
 }
 
-void AutoRecognize::addMototInfo(quint8 nDeviceId, quint32 nDeviceMac)
-{
-    m_motorsInfo.insert(nDeviceId,nDeviceMac);
-}
-
-void AutoRecognize::openFailed()
-{
-    m_bTryNext = true;
-}
-
-void AutoRecognize::waitTimeout()
+void EthernetAutoRecognize::waitTimeout()
 
 {
     qDebug() << "wait timeout";
@@ -113,7 +84,7 @@ void AutoRecognize::waitTimeout()
     //autoDestroy();
 }
 
-void AutoRecognize::onIpBroadcast()
+void EthernetAutoRecognize::onIpBroadcast()
 {
     QHostAddress addr;
     quint16 nPort;

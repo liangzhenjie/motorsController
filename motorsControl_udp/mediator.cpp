@@ -1,6 +1,6 @@
 ﻿#include "mediator.h"
 #include "communication.h"
-#include "autorecoginze.h"
+#include "EthernetAutoRecognize.h"
 #include "proxyparser.h"
 #include "dataUtil.h"
 #include "innfosproxy.h"
@@ -22,6 +22,8 @@ Mediator *Mediator::getInstance()
 Mediator::~Mediator()
 {
     delete m_pVersionMgr;
+    delete m_pCommunication;
+    delete m_pRecognize;
 }
 
 
@@ -30,18 +32,19 @@ void Mediator::autoRecognize()
 #ifdef TEST_DEBUG
     connect(Communication::getInstance(),&Communication::request,ProxyWatcher::getInstance(),&ProxyWatcher::addSendItem);
 #endif
-    AutoRecognize::getInstance()->startRecognize(true);
+    m_pCommunication->stop();//断掉已有连接
+    m_pRecognize->startRecognize();
 }
 
 void Mediator::onCanConnected(quint32 nCommunicationUnitId)
 {
-    Communication::getInstance()->setUnitConnectionStatus(nCommunicationUnitId,UserDefine::CAN_CONNECTED);
+    m_pCommunication->setUnitConnectionStatus(nCommunicationUnitId,UserDefine::CAN_CONNECTED);
 }
 
 void Mediator::SendRequest(const QByteArray &buf)
 {
     quint8 nId = buf.at(1);
-    Communication::getInstance()->sendData(nId,buf);
+    m_pCommunication->sendData(nId,buf);
 }
 
 void Mediator::Handshake(quint32 nDeviceId, bool bSuccess)
@@ -59,7 +62,7 @@ void Mediator::SetSucceed(const quint8 nDeviceId, const int nProxyId)
 
     switch (nProxyId) {
     case D_SET_DEVICE_ID:
-        Communication::getInstance()->changeUnitRelateId(motorDataMgrInstance->getOldDeviceId(nDeviceId),nDeviceId);
+        m_pCommunication->changeUnitRelateId(motorDataMgrInstance->getOldDeviceId(nDeviceId),nDeviceId);
         motorDataMgrInstance->requestSuccessfully(nDeviceId,nProxyId);
         break;
     default:
@@ -77,9 +80,9 @@ void Mediator::SetFailed(const int nParam)
 void Mediator::reciveMotorInfo(quint32 communicateUnitId, const quint32 nDeviceMac, const quint8 nDeviceId)
 {
     qDebug() << "MotorInfo" << communicateUnitId << nDeviceId;
-    AutoRecognize::getInstance()->addMototInfo(nDeviceId,nDeviceMac);
-    Communication::getInstance()->addRelateIdToUnit(communicateUnitId,nDeviceId);
-    Communication::getInstance()->setUnitConnectionStatus(communicateUnitId,UserDefine::CAN_CONNECTED|UserDefine::MOTOR_CONNECTED);
+    m_pRecognize->addMototInfo(nDeviceId,nDeviceMac);
+    m_pCommunication->addRelateIdToUnit(communicateUnitId,nDeviceId);
+    m_pCommunication->setUnitConnectionStatus(communicateUnitId,UserDefine::CAN_CONNECTED|UserDefine::MOTOR_CONNECTED);
 }
 
 void Mediator::receiveNoDataProxy(const int nDeviceID)
@@ -109,7 +112,7 @@ void Mediator::receiveNoDataProxy(const int nDeviceID)
 void Mediator::recognizeFinished(QMap<quint8, quint32> motorsInfo)
 {
     motorDataMgrInstance->AddMotorsData(motorsInfo);//add to logic manager
-    Communication::getInstance()->removeUnAvailablePorts();
+    m_pCommunication->removeUnAvailablePorts();
     m_sRecognizeFinished.s_Emit();
 }
 
@@ -126,6 +129,26 @@ void Mediator::receiveQuaternion(quint8 imuId, double w, double x, double y, dou
 QString Mediator::versionString() const
 {
     return m_pVersionMgr->toString();
+}
+
+int Mediator::addCommunicationUnit(QString unitStr, quint32 unitNumber)
+{
+    if(m_pCommunication)
+        return m_pCommunication->addCommunication(unitStr,unitNumber);
+    return -1;
+}
+
+void Mediator::setUnitConnectionStatus(quint32 nUnitId, quint8 nStatus)
+{
+    m_pCommunication->setUnitConnectionStatus(nUnitId,nStatus);
+}
+
+void Mediator::initCommunication(int nType)
+{
+    m_pCommunication = new Communication(nType);
+    m_pRecognize = AbstractAutoRecongnize::getInstance(nType);
+    connect(m_pCommunication,&Communication::response,this,&Mediator::response);
+    connect(m_pCommunication,&Communication::connectionError,this,&Mediator::errorOccur);
 }
 
 void Mediator::checkServosStatus()
@@ -155,10 +178,11 @@ void Mediator::motorAttrChanged(quint8 nDeviceId, quint8 nAttrId, QVariant value
 
 Mediator::Mediator(QObject *parent):
     QObject(parent),
-    m_pVersionMgr(nullptr)
+    m_pVersionMgr(nullptr),
+    m_pCommunication(nullptr),
+    m_pRecognize(nullptr)
 {
-    connect(Communication::getInstance(),&Communication::response,this,&Mediator::response);
-    connect(Communication::getInstance(),&Communication::connectionError,this,&Mediator::errorOccur);
+
     m_pVersionMgr = new QVersionNumber(1,0,3);
 }
 

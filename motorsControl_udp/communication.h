@@ -4,6 +4,7 @@
 #include <QMap>
 #include <QObject>
 #include <QUdpSocket>
+#include "userdefine.h"
 
 class CommunicateUnit;
 
@@ -11,10 +12,10 @@ class Communication : public QObject
 {
     Q_OBJECT
 public:
-    static Communication * getInstance();
-    void sendDataBeforeDestroyed();
+    explicit Communication(int nType=UserDefine::Via_Ethernet,QObject * parent = nullptr);
+    //void sendDataBeforeDestroyed();
     ~ Communication();
-    int addCommunication(const QString &addr,const quint32 nPort);
+    int addCommunication(const QString &str,const quint32 num);
     void sendData(quint8 nDeviceId,const QByteArray & data);
     bool hasDataWaitToSend();
     void stop();
@@ -26,28 +27,15 @@ public:
 public slots:
     void unitFinished(quint8 unitId);
 protected:
-    explicit Communication(QObject * parent = nullptr);
+
 signals:
     void response(quint32 unitId,const QByteArray response);
     void request(const QByteArray &request);
     void connectionError(quint8 unitId,quint16 errorId,QString errorStr);
 private:
-    class GC{
-    public:
-        ~GC()
-        {
-            if(m_pCommucation!=nullptr)
-            {
-                m_pCommucation->sendDataBeforeDestroyed();
-                delete m_pCommucation;
-                m_pCommucation = nullptr;
-            }
-        }
-        static GC gc;
-    };
 private:
-    static Communication * m_pCommucation;
     QList<CommunicateUnit *> m_lUnits;
+    int m_nCommunicationType;
 public:
 };
 

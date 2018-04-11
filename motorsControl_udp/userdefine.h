@@ -61,6 +61,11 @@ namespace UserDefine {
         Homing_Auto=0,
         Homing_Manual,
     };
+
+    enum CommunicationType{
+        Via_Ethernet,
+        Via_Serialport,
+    };
 }
 
 #endif // USERDEFINE_H

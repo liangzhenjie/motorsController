@@ -5,13 +5,13 @@
 #include <QMutex>
 #include <QMap>
 #include <QVector>
-#include <QUdpSocket>
+
 
 class CommunicateUnit : public QObject
 {
     Q_OBJECT
 public:
-    explicit CommunicateUnit(quint32 unitId,const QString unitAddr,quint32 port,QObject *parent = 0);
+    explicit CommunicateUnit(quint32 unitId,QObject *parent = 0);
 
 signals:
     void response(quint32 unitId,QByteArray responseData);
@@ -31,20 +31,21 @@ public:
     bool isAvailable()const;
     void setConnectionStatus(quint8 nStatus);
     quint8 getConnectionStatus()const;
-    QString getCommunicationUnitName()const{return m_sUnitAddr;}
+    virtual QString getCommunicationUnitName()=0;
 public slots:
-    void progress();
-private:
-    quint32 m_nUnitId;
-    //QHostAddress m_unitAddr;
-    QString m_sUnitAddr;
-    quint16 m_nPort;
-    QList<quint8> m_relateIdList;//motors's ids whitch communicate via this unit
+    virtual void progress()=0;
+protected:
+
     QMap<quint8,QVector <QByteArray>> m_dataMap;
     QVector<QByteArray> m_dataVector;
     QMutex m_qmMutex;
     bool m_bStop;
+    quint32 m_nUnitId;
     quint8 m_nConnectionStatus;
+    QList<quint8> m_relateIdList;//motors's ids whitch communicate via this unit
+    //QHostAddress m_unitAddr;
+
+
 };
 
 #endif // COMMUNICATEUNIT_H

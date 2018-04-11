@@ -17,12 +17,13 @@ MotorsController::MotorsController():
     m_lConnectionIds.push_back(mediator->m_sNewChartStart.connect_member(this,&MotorsController::startNewChart));
 }
 
-void MotorsController::initController(int &argc, char **argv)
+void MotorsController::initController(int &argc, char **argv, int nCommunicationType)
 {
     if(m_pInstance != nullptr)
     {
         return;
     }
+    mediator->initCommunication(nCommunicationType);
     if(QCoreApplication::instance() == nullptr)
         m_pQtCore = new QCoreApplication(argc,argv);
     m_pInstance= new MotorsController();

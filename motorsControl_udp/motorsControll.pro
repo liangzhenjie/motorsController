@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 QT       -= gui
-QT += network
+QT += network serialport
 QT += core
 CONFIG(debug,debug|release){
 TARGET = motorsControlld
@@ -37,8 +37,12 @@ SOURCES += motorscontroller.cpp \
     mediator.cpp \
     motordata.cpp \
     proxyparser.cpp \
-    autorecoginze.cpp \
-    communicateunit.cpp
+    communicateunit.cpp \
+    AbstractAutoRecongnize.cpp \
+    SerialAutoRecognize.cpp \
+    EthernetCommunicateUnit.cpp \
+    EthernetAutoRecognize.cpp \
+    SerialCommunicateUnit.cpp
 
 HEADERS += motorscontroller.h\
         motorscontroll_global.h \
@@ -50,9 +54,13 @@ HEADERS += motorscontroller.h\
     motordata.h \
     proxyparser.h \
     userdefine.h \
-    autorecoginze.h \
     communicateunit.h \
-    CSignal.hpp
+    CSignal.hpp \
+    AbstractAutoRecongnize.h \
+    SerialAutoRecognize.h \
+    EthernetCommunicateUnit.h \
+    EthernetAutoRecognize.h \
+    SerialCommunicateUnit.h
 
 unix {
     target.path = /usr/lib

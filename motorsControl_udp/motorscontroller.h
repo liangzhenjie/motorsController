@@ -32,7 +32,7 @@ public:
      * @param argc 参数个数
      * @param argv 参数数组
      */
-    static void initController(int &argc, char **argv);
+    static void initController(int &argc, char **argv,int nCommunicationType=UserDefine::Via_Ethernet);
     /**
      * @brief getInstance 获取控制器对象
      * @return 控制器对象

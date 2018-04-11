@@ -5,7 +5,7 @@
 #include <QTextStream>
 #include "communication.h"
 #include <QMutexLocker>
-#include "autorecoginze.h"
+#include "EthernetAutoRecognize.h"
 #include "userdefine.h"
 //#define DEVICEID_127 //the max device id is 127
 

@@ -13,44 +13,36 @@
 #include <QRegExp>
 #include "communicateunit.h"
 #include "userdefine.h"
+#include "EthernetCommunicateUnit.h"
+#include "SerialCommunicateUnit.h"
 
-Communication * Communication::m_pCommucation = nullptr;
-Communication::Communication(QObject *parent):
-    QObject(parent)
+Communication::Communication(int nType, QObject *parent):
+    QObject(parent),
+    m_nCommunicationType(nType)
 {
 
 }
 
-Communication *Communication::getInstance()
-{
-    if (!m_pCommucation)
-    {
-        m_pCommucation = new Communication();
-    }
-    return m_pCommucation;
-}
+//void Communication::sendDataBeforeDestroyed()
+//{
+//    if(m_pCommucation)
+//    {
+//#ifdef RELEASE_LOG
+//    m_pCommucation->recordRemainCmds();
+//#endif
+//        while (true)
+//        {
+//            if(!m_pCommucation->hasDataWaitToSend())
+//            {
+//                //delete m_pCommucation;
+//                break;
+//            }
+//            QThread::msleep(1);
+//        }
 
-
-void Communication::sendDataBeforeDestroyed()
-{
-    if(m_pCommucation)
-    {
-#ifdef RELEASE_LOG
-    m_pCommucation->recordRemainCmds();
-#endif
-        while (true)
-        {
-            if(!m_pCommucation->hasDataWaitToSend())
-            {
-                //delete m_pCommucation;
-                break;
-            }
-            QThread::msleep(1);
-        }
-
-    }
-    //_pCommucation = nullptr;
-}
+//    }
+//    //_pCommucation = nullptr;
+//}
 
 Communication::~Communication()
 {
@@ -58,30 +50,49 @@ Communication::~Communication()
 }
 
 
-int Communication::addCommunication(const QString &addr, const quint32 nPort)
+int Communication::addCommunication(const QString &str, const quint32 num)
 {
 //    QRegExp rx("\\d+");
 //    int pos = rx.indexIn(addr);
     if(/*pos > -1*/true)
     {
         //quint8 nPortNum = rx.cap(0).toUInt();
-        CommunicateUnit * pUnit = new CommunicateUnit(nPort,addr,nPort);//id与端口一致，现在端口都不一样
-        QThread * pThread = new QThread();
-        pUnit->moveToThread(pThread);
-        m_lUnits.append(pUnit);
-        connect(pUnit,&CommunicateUnit::finished,pUnit,&CommunicateUnit::deleteLater);
-        connect(pUnit,&CommunicateUnit::finished,pThread,&QThread::quit);
-        connect(pThread,&QThread::finished,pThread,&QThread::deleteLater);
+        CommunicateUnit * pUnit = nullptr;
+        if(m_nCommunicationType == UserDefine::Via_Ethernet)
+        {
+            pUnit = new EthernetCommunicateUnit(num,str,num);//id与端口一致，现在端口都不一样
+        }
+        else
+        {
+            QRegExp rx("\\d+");
+            int pos = rx.indexIn(str);
+            if(pos > -1)
+            {
+                quint8 nPortNum = rx.cap(0).toUInt();
+                pUnit = new SerialCommunicateUnit(nPortNum,str,num);
+            }
+        }
 
-        connect(pUnit,&CommunicateUnit::response,this,&Communication::response);
-        connect(pThread,&QThread::started,pUnit,&CommunicateUnit::progress);
+        if(pUnit != nullptr)
+        {
+            QThread * pThread = new QThread();
+            pUnit->moveToThread(pThread);
+            m_lUnits.append(pUnit);
+            connect(pUnit,&CommunicateUnit::finished,pUnit,&CommunicateUnit::deleteLater);
+            connect(pUnit,&CommunicateUnit::finished,pThread,&QThread::quit);
+            connect(pThread,&QThread::finished,pThread,&QThread::deleteLater);
 
-        pThread->start();
-        return pUnit->getUnitId();
+            connect(pUnit,&CommunicateUnit::response,this,&Communication::response);
+            connect(pThread,&QThread::started,pUnit,&CommunicateUnit::progress);
+
+            pThread->start();
+            return pUnit->getUnitId();
+        }
+
     }
     else
     {
-        qDebug() << "portName error! " << addr;
+        qDebug() << "portName error! " << str;
     }
     return -1;
 }

@@ -6,6 +6,8 @@
 #include <functional>
 #include <string>
 #include "CSignal.hpp"
+#include "AbstractAutoRecongnize.h"
+#include "communication.h"
 //#define TEST_DEBUG
 #define LOG_DEBUG
 //#define NO_HEART_BEAT
@@ -43,6 +45,9 @@ public:
     void chartVauleChange(const int nChannelId,qreal values);//only use by chart
     void receiveQuaternion(quint8 imuId, double w,double x,double y,double z);
     QString versionString()const;
+    int addCommunicationUnit(QString unitStr,quint32 unitNumber);
+    void setUnitConnectionStatus(quint32 nUnitId,quint8 nStatus);
+    void initCommunication(int nType);
 public slots:
     void response(quint32 nUnitId,const QByteArray buf);
     void reconnectDevice(quint8 nDeviceId);
@@ -75,6 +80,8 @@ public:
     CSignal<uint8_t,double,double,double,double> m_sQuaternion;
 private:
     QVersionNumber * m_pVersionMgr;
+    AbstractAutoRecongnize * m_pRecognize;
+    Communication * m_pCommunication;
 };
 
 #endif // MEDIATOR_H
